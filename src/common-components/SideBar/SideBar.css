@@ -1,0 +1,123 @@
+.sidebar-container {
+  /* background-color: rgb(188, 217, 188); */
+  height: max-content;
+  width: 30vw;
+  /* margin-top: 7vh; */
+  height: 100vh;
+  display: flex;
+  flex-direction: column;
+  text-align: initial;
+}
+
+.sidebar-menu {
+  display: flex;
+  justify-content: center;
+  padding: 0.8rem;
+  color: white;
+  height: 100vh;
+  align-items: center;
+  background-color: rgb(20, 96, 20);
+}
+
+.radio {
+  margin: 0.5rem;
+}
+
+.radio input[type="radio"] {
+  position: absolute;
+  opacity: 0;
+}
+
+.radio input[type="radio"] + .radio-label:before {
+  content: "";
+  background: #f4f4f4;
+  border-radius: 100%;
+  border: 1px solid #b4b4b4;
+  display: inline-block;
+  width: 1.4em;
+  height: 1.4em;
+  position: relative;
+  margin-right: 1em;
+  vertical-align: top;
+  cursor: pointer;
+  text-align: center;
+  transition: all 250ms ease;
+}
+
+.radio input[type="radio"]:checked + .radio-label:before {
+  background-color: #3197ee;
+  box-shadow: inset 0 0 0 4px #f4f4f4;
+}
+
+.radio input[type="radio"]:focus + .radio-label:before {
+  outline: none;
+  border-color: #3197ee;
+}
+
+.radio input[type="radio"]:disabled + .radio-label:before {
+  box-shadow: inset 0 0 0 4px #f4f4f4;
+  border-color: #b4b4b4;
+  background: #b4b4b4;
+}
+
+.radio input[type="radio"] + .radio-label:empty:before {
+  margin-right: 0;
+}
+
+span {
+  font-size: 18px;
+}
+
+input.nosubmit {
+  border: 1px solid #555;
+  width: 100%;
+  font-size: 12px;
+  background-color: white;
+  padding: 9px 4px 9px 40px;
+  background: transparent
+    url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='16' height='16' class='bi bi-search' viewBox='0 0 16 16'%3E%3Cpath d='M11.742 10.344a6.5 6.5 0 1 0-1.397 1.398h-.001c.03.04.062.078.098.115l3.85 3.85a1 1 0 0 0 1.415-1.414l-3.85-3.85a1.007 1.007 0 0 0-.115-.1zM12 6.5a5.5 5.5 0 1 1-11 0 5.5 5.5 0 0 1 11 0z'%3E%3C/path%3E%3C/svg%3E")
+    no-repeat 13px center;
+}
+
+.sidebar-search {
+  background-color: white;
+}
+
+.sidebar-process-data-title {
+  margin-left: 2vw;
+}
+
+.sidebar-process-data-children {
+  margin-left: 2vw;
+}
+
+.sidebar-data-container {
+  padding: 5px;
+  background-color: rgb(188, 217, 188);
+}
+
+.sidebar-tab-selection {
+  margin: 20px;
+}
+
+.sidebar-search {
+  width: 100%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  margin-bottom: 10px;
+}
+.template {
+  margin: 2rem;
+  display: flex;
+  align-items: center;
+  font-size: 1.25rem;
+}
+.dot {
+  background-color: black;
+  width: 8px;
+  height: 8px;
+  align-items: center;
+  margin-right: 0.75rem;
+  border-radius: 100%;
+}

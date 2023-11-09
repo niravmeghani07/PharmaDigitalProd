@@ -1,0 +1,23 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+  <meta charset="utf-8">
+  <title>Redirecting...</title>
+  <script>
+    // Get the variable name from the URL
+    const selectedProduct =  decodeURIComponent(window.location.pathname.replace(/^\/PharmaDigitalProd\//, ""));
+
+    // Log the variable name
+    console.log("Variable name:", selectedProduct);
+    sessionStorage.productName=selectedProduct
+    // Redirect all requests to the index.html
+    window.location.replace("/PharmaDigitalProd/index.html" + window.location.hash);
+  </script>
+</head>
+
+<body>
+  <p>Redirecting to the application...</p>
+</body>
+
+</html>

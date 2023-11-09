@@ -1,0 +1,60 @@
+.parent-tree-node-content {
+  margin-right: 1em;
+  color: #4e9f3d;
+  font-size: 1.2rem;
+  text-decoration: underline;
+  font-weight: bold;
+  width: 21rem;
+}
+
+.child-tree-node-content:before {
+  content: "• ";
+}
+
+.tree-view {
+  list-style-type: none;
+  padding: 0;
+}
+
+.linear-tree-node {
+  display: flex;
+  align-items: center;
+  cursor: pointer;
+  position: relative;
+  transition: background-color 0.2s ease;
+  padding: 8px;
+}
+
+.linear-tree-node:hover {
+  /* background-color: #EBF8F2; */
+  color: rgb(0, 171, 85);
+  border-radius: 8px;
+  height: auto;
+  background-color: rgba(0, 171, 85, 0.08);
+  font-weight: bold;
+}
+
+.tree-node-content {
+  padding: 10px;
+  height: auto;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  margin-left: 45px;
+}
+
+.linear-arrow-icon {
+  margin-right: 15px;
+  transition: transform 0.1s ease;
+  margin-left: 5px;
+}
+
+.linear-sub-tree {
+  margin-left: 50px;
+  overflow: hidden;
+  transition: max-height 0.3s ease;
+}
+
+.linear-sub-tree.expanded {
+  max-height: 1000px; /* Adjust the value to accommodate your tree depth */
+}

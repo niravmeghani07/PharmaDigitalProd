@@ -1,0 +1,40 @@
+/* .pharma-header{
+    position: fixed;
+    z-index: 100;
+    height: 7vh;
+    background-color: black;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    font-size: 24px;
+    padding: 2px;
+    top: 0;
+    width: 100vw;
+    color: #fff;
+}
+
+.image-container
+{
+    margin-right: 10px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.header-logo
+{
+    background-color: aliceblue;
+    height: 100%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+} */
+
+.MuiAppBar-root{
+    background-color: #101828 !important;
+}
+.MuiAvatar-root{
+    background-color: white !important;
+    color: #101828 !important;
+    font-weight: bold !important;
+}

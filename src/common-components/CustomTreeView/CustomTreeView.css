@@ -1,0 +1,46 @@
+.linear-tree-view {
+    list-style-type: none;
+    padding: 0;
+  }
+  
+  .tree-node {
+    display: flex;
+    align-items: center;
+    cursor: pointer;
+    position: relative;
+    transition: background-color 0.2s ease;
+  }
+  
+  .tree-node:hover {
+    /* background-color: #EBF8F2; */
+    color: rgb(0, 171, 85);
+    border-radius: 8px;
+    height: auto;
+    background-color: rgba(0, 171, 85, 0.08);
+    font-weight: bold;
+  }
+  
+  .tree-node-content {
+    padding: 10px;
+    height: auto;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin-left: 45px;
+  }
+  
+  .arrow-icon {
+    margin-right: -35px;
+    transition: transform 0.3s ease;
+    margin-left: 5px;
+  }
+  
+  .sub-tree {
+    margin-left: 0px;
+    overflow: hidden;
+    transition: max-height 0.3s ease;
+  }
+  
+  .sub-tree.expanded {
+    max-height: 1000px; /* Adjust the value to accommodate your tree depth */
+  }
