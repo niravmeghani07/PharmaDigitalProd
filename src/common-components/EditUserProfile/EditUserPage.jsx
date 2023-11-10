@@ -12,11 +12,14 @@ import LockOutlinedIcon from '@mui/icons-material/LockOutlined';
 import Typography from '@mui/material/Typography';
 import Container from '@mui/material/Container';
 import { createTheme, ThemeProvider } from '@mui/material/styles';
+import { useNavigate } from 'react-router-dom';
+//import './EditUserPage.css'
 
 const defaultTheme = createTheme();
 
 
 export default function SignUp() {
+  const navigate = useNavigate();
   const handleSubmit = (event) => {
     event.preventDefault();
     const data = new FormData(event.currentTarget);
@@ -26,7 +29,11 @@ export default function SignUp() {
     });
   };
 
+  const handleLoginLinkClick = ()=>{
+    navigate('/login');
+  }
   return (
+    <div className='signup-page'>
     <ThemeProvider theme={defaultTheme}>
       <Container component="main" maxWidth="xs">
         <CssBaseline />
@@ -93,13 +100,17 @@ export default function SignUp() {
               type="submit"
               fullWidth
               variant="contained"
-              sx={{ mt: 3, mb: 2 }}
+              sx={{ mt: 3, mb: 2, bgcolor: '#26c95c' }} 
             >
               Sign Up
             </Button>
             <Grid container justifyContent="flex-end">
               <Grid item>
-                <Link href='' variant="body2">
+                <Link 
+                  onClick={handleLoginLinkClick} 
+                  variant="body2"
+                  sx={{ color: 'rgb(44, 100, 212)', cursor: 'pointer' }}
+                >
                   Already have an account? Sign in
                 </Link>
               </Grid>
@@ -109,5 +120,6 @@ export default function SignUp() {
         {/*<Copyright sx={{ mt: 5 }} />*/}
       </Container>
     </ThemeProvider>
+    </div>
   );
 }

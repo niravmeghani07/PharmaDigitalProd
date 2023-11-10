@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import './LoginPage.css';
+import Button from "@mui/material/Button";
 
 function LoginPage() {
   const navigate = useNavigate();
@@ -21,14 +22,19 @@ function LoginPage() {
 
     // Perform username and password validation here
     if (password === 'Cloud123') {
-      // If the username and password are correct, navigate to the desired page
+      // If the username and password are correct, navigate to the dashboard
       sessionStorage.userName = username;
       sessionStorage.password = password;
-      sessionStorage.isUserLoggedIn="true"
+      sessionStorage.isUserLoggedIn = "true";
       navigate('/dashboard');
     } else {
       setError('Invalid username or password');
     }
+  };
+
+  const handleSignupClick = () => {
+    // Navigate to the EditUserPage.jsx when the Signup button is clicked
+    navigate('/edit-user');
   };
 
   return (
@@ -55,7 +61,14 @@ function LoginPage() {
             />
           </div>
           {error && <p className="error">{error}</p>}
-          <button type="submit">Login</button>
+          <div className="button-group">
+          <Button variant="contained" color="primary" type="submit" style={{ marginRight: '8px' }}>
+              Login
+            </Button>
+            <Button variant="contained" color="primary" onClick={handleSignupClick}>
+              Signup
+            </Button>
+          </div>
         </form>
       </div>
     </div>
