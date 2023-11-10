@@ -1,11 +1,13 @@
 import React from "react";
 import { Route, Routes, Navigate, useParams, useLocation } from "react-router-dom";
 import Dashboard from "../pages/Dashboard/Dashboard.jsx";
+import LoginPage from "../components/LoginPage/LoginPage.jsx";
 import EditUserPage from '../common-components/EditUserProfile/EditUserPage.jsx';
 
 function Router() {
   return (
     <Routes>
+      <Route path="/login" element={<LoginPage />} />
       <Route path="/" element={<Dashboard />} />
       <Route path="/edit-user" element={<EditUserPage />} />
       <Route path="/:product*" element={<VariableRoute />} />
