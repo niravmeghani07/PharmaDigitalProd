@@ -342,7 +342,7 @@ function FlowChart(props) {
       from_name:'Nirav Meghani',
       from_email:'nc90762@gmail.com',
       to_email:email,
-      to_name: 'Nirav',
+      to_name: 'RamKumar',
       message: emailBody
     }
     emailjs.send(serviceID,templateID,emailData,publicKey)
