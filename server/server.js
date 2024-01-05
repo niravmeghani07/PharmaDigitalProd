@@ -3,6 +3,9 @@ const { MongoClient } = require('mongodb');
 
 const app = express();
 const PORT = process.env.PORT || 5000;
+const cors = require('cors');
+
+app.use(cors());
 
 // MongoDB Atlas connection URI
 const uri = 'mongodb+srv://niravMeghani:FdhopgXdro7aRfIG@cluster0.7cmxwc4.mongodb.net/?retryWrites=true&w=majority'; 

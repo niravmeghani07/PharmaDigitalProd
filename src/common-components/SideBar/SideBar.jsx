@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState,useEffect } from "react";
 import Box from "@mui/material/Box";
 import Drawer from "@mui/material/Drawer";
 import CssBaseline from "@mui/material/CssBaseline";
@@ -11,35 +11,56 @@ import FormControlLabel from "@mui/material/FormControlLabel";
 import FormControl from "@mui/material/FormControl";
 import TextField from "@mui/material/TextField";
 import CustomTreeView from "../CustomTreeView/CustomTreeView.jsx";
-import { sideBarData } from "../../constants/sidebarStageData.js";
+//import { sideBarData } from "../../constants/sidebarStageData.js";
 import "./SideBar.css";
+import axios from 'axios';
+
 const drawerWidth = 300;
 
 const Sidebar = (props) => {
   const { handleRestore } = props;
   const [searchText, setSearchText] = useState("");
   const [selectedTab, setSelectedTab] = useState(1);
+  const [sidebarData, setsidebarData] = useState([]);
   const {
     mainTreeData,
     updateMainTreeData,
     flowChartData,
     updateFlowChartData,
   } = useAppContext();
+
   const [flowDataArray, setFlowDataArray] = React.useState([]);
 
   const handleSelectedTabChange = (event) => {
     setSelectedTab(Number(event.target.value));
   };
 
-  React.useEffect(() => {
+  useEffect(() => {
     // Retrieve the array from session storage
     const arrayString = sessionStorage.getItem("flowchart");
     const parsedArray = JSON.parse(arrayString);
 
+    //call axios to fetch the data from the server
+    const fetchData = async()=>{
+        try {
+          const response = await axios.get("http://localhost:5000/api/sidebardata");
+          setsidebarData(response.data);
+          //console.log(response.data);
+          
+        } catch (error) {
+          console.log("Error fetching the sidebardata: ",error);
+        }
+
+    }
+
     // const parsedTreeData = JSON.parse(TreeData);
     // Set the retrieved array in the component state
+    fetchData();
     setFlowDataArray(parsedArray);
+       
   }, []);
+
+
 
   const handleDrag = (e, innerItem, id) => {
     const customData = {
@@ -172,7 +193,7 @@ const Sidebar = (props) => {
                   />
                 </div>
                 <CustomTreeView
-                  treeData={sideBarData}
+                  treeData={sidebarData}
                   searchValue={searchText}
                   handleDrag={handleDrag}
                 />
