@@ -38,6 +38,8 @@
     border-radius: 4px;
     border: 1px solid #ccc;
   }
+
+ 
   
   button {
     padding: 10px 20px;
@@ -79,5 +81,23 @@
   
   .input-group input {
     width: 250px;
+  }
+
+  select {
+    padding: 10px;
+    border-radius: 4px;
+    border: 1px solid #ccc;
+    width: 275px; /* Set the width of the select element */
+  }
+  
+  .select-group {
+    display: flex;
+    flex-direction: column;
+    margin-bottom: 10px;
+  }
+  
+  .select-group label {
+    margin-bottom: 5px;
+    align-self: flex-start; /* Align the label to the left */
   }
   

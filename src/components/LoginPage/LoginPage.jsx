@@ -7,6 +7,7 @@ function LoginPage() {
   const navigate = useNavigate();
   const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
+  const [designation, setDesignation] = useState('');
   const [error, setError] = useState('');
 
   const handleUsernameChange = (e) => {
@@ -17,6 +18,10 @@ function LoginPage() {
     setPassword(e.target.value);
   };
 
+  const handleDesignationChange = (e) => {
+    setDesignation(e.target.value);
+  };
+
   const handleSubmit = (e) => {
     e.preventDefault();
 
@@ -25,8 +30,10 @@ function LoginPage() {
       // If the username and password are correct, navigate to the dashboard
       sessionStorage.userName = username;
       sessionStorage.password = password;
+      sessionStorage.designation = designation;
       sessionStorage.isUserLoggedIn = "true";
       navigate('/dashboard');
+     // navigate('/dashboard?designation=${designation}');
     } else {
       setError('Invalid username or password');
     }
@@ -60,6 +67,17 @@ function LoginPage() {
               onChange={handlePasswordChange}
             />
           </div>
+          <div className="select-group">
+            <label htmlFor="designation">Designation</label>
+            <select
+            id="designation"
+            value={designation}
+            onChange={handleDesignationChange}
+            >
+            <option value="Manager">Manager</option>
+            <option value="Analyst">Analyst</option>
+             </select>
+          </div>
           {error && <p className="error">{error}</p>}
           <div className="button-group">
           <Button variant="contained" color="primary" type="submit" style={{ marginRight: '8px' }}>
@@ -76,3 +94,4 @@ function LoginPage() {
 }
 
 export default LoginPage;
+
