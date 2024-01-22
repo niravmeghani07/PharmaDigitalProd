@@ -28,7 +28,7 @@ export default function SignUp() {
       password: data.get('password'),
     });
   };
-
+  
   const handleLoginLinkClick = ()=>{
     navigate('/login');
   }

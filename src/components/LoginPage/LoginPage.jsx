@@ -19,7 +19,18 @@ function LoginPage() {
   };
 
   const handleDesignationChange = (e) => {
-    setDesignation(e.target.value);
+    const selectedDesignation = e.target.value;
+    setDesignation(selectedDesignation);
+
+    // Store the selected designation in sessionStorage
+    sessionStorage.designation = selectedDesignation;
+  };
+
+  const handleDropdownClick = () => {
+    // Set a default value when the dropdown is clicked
+    if (designation === '') {
+      setDesignation('Select Designation');
+    }
   };
 
   const handleSubmit = (e) => {
@@ -27,13 +38,13 @@ function LoginPage() {
 
     // Perform username and password validation here
     if (password === 'Cloud123') {
-      // If the username and password are correct, navigate to the dashboard
+      // If the username and password are correct, store the information in sessionStorage
       sessionStorage.userName = username;
       sessionStorage.password = password;
-      sessionStorage.designation = designation;
       sessionStorage.isUserLoggedIn = "true";
+
+      // Navigate to the dashboard
       navigate('/dashboard');
-     // navigate('/dashboard?designation=${designation}');
     } else {
       setError('Invalid username or password');
     }
@@ -70,17 +81,19 @@ function LoginPage() {
           <div className="select-group">
             <label htmlFor="designation">Designation</label>
             <select
-            id="designation"
-            value={designation}
-            onChange={handleDesignationChange}
+              id="designation"
+              value={designation}
+              onChange={handleDesignationChange}
+              onClick={handleDropdownClick}
             >
-            <option value="Manager">Manager</option>
-            <option value="Analyst">Analyst</option>
-             </select>
+              <option value="">Select Designation</option>
+              <option value="Manager">Manager</option>
+              <option value="Analyst">Analyst</option>
+            </select>
           </div>
           {error && <p className="error">{error}</p>}
           <div className="button-group">
-          <Button variant="contained" color="primary" type="submit" style={{ marginRight: '8px' }}>
+            <Button variant="contained" color="primary" type="submit" style={{ marginRight: '8px' }}>
               Login
             </Button>
             <Button variant="contained" color="primary" onClick={handleSignupClick}>
@@ -94,4 +107,3 @@ function LoginPage() {
 }
 
 export default LoginPage;
-

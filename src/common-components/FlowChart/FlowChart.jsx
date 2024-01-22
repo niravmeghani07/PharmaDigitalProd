@@ -18,6 +18,7 @@ import { toPng } from "html-to-image";
 import FolderSpecialIcon from "@mui/icons-material/FolderSpecial";
 import Dropdown from "../Dropdown/TechTransferDropdown";
 import { useReactFlow } from "react-flow-renderer";
+import Badge from '@mui/material/Badge';
 import ReactFlow, {
   Controls,
   useNodesState,
@@ -35,7 +36,7 @@ import TextField from "@mui/material/TextField";
 import Button from "@mui/material/Button";
 import emailjs from "@emailjs/browser";
 import AsiaFlowChartData from "../../constants/AsiaData/TempraryAsiaFlowChart";
-import AsiaMainTreeData from "../../constants/AsiaData/TempraryAsiaMainTreeData";
+//import AsiaMainTreeData from "../../constants/AsiaData/TempraryAsiaMainTreeData";
 
 import { instance as axios } from "../../services/root-service";
 import cheerio from "cheerio";
@@ -135,7 +136,10 @@ function FlowChart(props) {
   const [templateName, setTemplateName] = useState("");
   const[email,setEmail]= useState("");
   const[emailBody,setEmailBody] = useState("");
-  
+  const[synthesisTreeData,setsynthesisTreeData] = useState([]);
+  const userDesignation = sessionStorage.designation;
+
+  console.log(userDesignation);
 
   const [coOrds, setCoords] = useState({
     xPos: 580,
@@ -620,11 +624,26 @@ function FlowChart(props) {
   };
 
   React.useEffect(() => {
-    updateMainTreeData(mainTreeData);
+    //updateMainTreeData(mainTreeData);
+    //call axios to fetch the data from the server
+    const fetchData = async()=>{
+      try {
+        const response = await axios.get("http://localhost:5000/api/synthesisTreeData");
+        setsynthesisTreeData(response.data);
+        console.log(response.data);
+      } catch (error) {
+        console.log("Error fetching the sidebardata: ",error);
+      }
+
+    }
+  // Set the retrieved array in the component state
+  fetchData();
+
     setNodes([]);
     setEdges([]);
+
     if (selectedTechValue === "Europe") {
-      updateMainTreeData(AsiaMainTreeData);
+      updateMainTreeData(synthesisTreeData);
       const jsonData = JSON.stringify(AsiaFlowChartData, null, 2);
       const parsedData = JSON.parse(jsonData);
       const { nodes: restoredNodes, edges: restoredEdges } = parsedData;
@@ -632,7 +651,7 @@ function FlowChart(props) {
       handleRestoreClick(restoredNodes, restoredEdges);
     } else if (selectedTechValue === "Global") {
       console.log("daivik chauhan = ", flowChartData[0]);
-      updateMainTreeData(mainTreeData);
+      updateMainTreeData(synthesisTreeData);
       const jsonData = JSON.stringify(flowChartData[0], null, 2);
       const parsedData = JSON.parse(jsonData);
       const { nodes: restoredNodes, edges: restoredEdges } = parsedData;
@@ -716,6 +735,8 @@ function FlowChart(props) {
                   />
                 </div>
               </Tooltip>
+              {userDesignation === 'Manager' &&(
+                <Badge badgeContent={2} color="error">
                <Tooltip title={"Approve"} arrow>
                 <div
                   onClick={() => handleGenericOpenModal("approval-modal")}
@@ -727,6 +748,8 @@ function FlowChart(props) {
                   />
                 </div>
               </Tooltip>
+              </Badge>)}
+              {userDesignation !== 'Manager' &&(
              <Tooltip title={"Reporting"} arrow>
                 <div
                   onClick={() => handleGenericOpenModal("request-modal")}
@@ -737,7 +760,9 @@ function FlowChart(props) {
                     style={{ cursor: "pointer" }}
                   />
                 </div>
-              </Tooltip> 
+              </Tooltip>)}
+
+              {userDesignation !== 'Manager' &&(
               <Tooltip title={"Save"} arrow>
                 <div 
                 onClick={()=>handleGenericOpenModal("saveData-modal")}
@@ -751,7 +776,7 @@ function FlowChart(props) {
                     style={{ cursor: "pointer" }}
                   />
                 </div>
-              </Tooltip>
+              </Tooltip>)}
               <Tooltip title={"Save as Template"} arrow>
                 <div
                   onClick={() => handleGenericOpenModal("saveTemplate-modal")}

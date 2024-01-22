@@ -15,18 +15,28 @@ MongoClient.connect(uri)
   .then((client) => {
     console.log('Connected to MongoDB Atlas');
     const db = client.db('PharmaApp');
-    const collection = db.collection('sidebardata');
+    //const collection = db.collection('sidebardata');
 
     // Define a route to fetch data
     app.get('/api/sidebardata', async (req, res) => {
       try {
-        const data = await collection.find({}).toArray();
+        const data = await db.collection('sidebardata').find({}).toArray();
         res.json(data);
       } catch (error) {
         console.error('Error fetching data:', error);
         res.status(500).json({ error: 'Internal Server Error' });
       }
     });
+
+    app.get('/api/synthesisTreeData',async(req,res)=>{
+      try {
+         const data = await db.collection('synthesisTreeData').find({}).toArray();
+         res.json(data); 
+      } catch (error) {
+        console.error('Error fetching data:', error);
+        res.status(500).json({ error: 'Internal Server Error' });
+      }
+    })
 
     // Start the server
     app.listen(PORT, () => {
