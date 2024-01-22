@@ -12,6 +12,8 @@ import LockOutlinedIcon from '@mui/icons-material/LockOutlined';
 import Typography from '@mui/material/Typography';
 import Container from '@mui/material/Container';
 import { createTheme, ThemeProvider } from '@mui/material/styles';
+import { Select, MenuItem } from '@mui/material';
+import { Radio, RadioGroup, InputLabel} from '@mui/material';
 import { useNavigate } from 'react-router-dom';
 //import './EditUserPage.css'
 
@@ -20,15 +22,20 @@ const defaultTheme = createTheme();
 
 export default function SignUp() {
   const navigate = useNavigate();
+  const [designation, setDesignation] = React.useState('');
   const handleSubmit = (event) => {
     event.preventDefault();
     const data = new FormData(event.currentTarget);
     console.log({
       email: data.get('email'),
       password: data.get('password'),
+      designation: data.get('designation'),
     });
   };
   
+  const handleDesignationChange = (event) => {
+    setDesignation(event.target.value);
+  };
   const handleLoginLinkClick = ()=>{
     navigate('/login');
   }
@@ -95,6 +102,26 @@ export default function SignUp() {
                   autoComplete="new-password"
                 />
               </Grid>
+              <Grid item xs={3} >
+             
+              <InputLabel id="designation-label">Designation</InputLabel>
+              </Grid>
+
+              <Grid item xs={12} >
+                  <RadioGroup
+                  aria-label="designation"
+                  name="designation"
+                  id="designation"
+                  value={designation}
+                  onChange={handleDesignationChange}
+                  row
+                >
+                {/* Add FormControlLabel for each radio button option */}
+                <FormControlLabel value="Analyst" control={<Radio />} label="Anaylst" />
+                <FormControlLabel value="Manager" control={<Radio />} label="Manager" />
+              </RadioGroup>
+
+            </Grid>
             </Grid>
             <Button
               type="submit"
