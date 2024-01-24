@@ -6,6 +6,7 @@ const PORT = process.env.PORT || 5000;
 const cors = require('cors');
 
 app.use(cors());
+app.use(express.json());
 
 // MongoDB Atlas connection URI
 const uri = 'mongodb+srv://niravMeghani:FdhopgXdro7aRfIG@cluster0.7cmxwc4.mongodb.net/?retryWrites=true&w=majority'; 
@@ -15,6 +16,7 @@ MongoClient.connect(uri)
   .then((client) => {
     console.log('Connected to MongoDB Atlas');
     const db = client.db('PharmaApp');
+    const userRegistryCollection = db.collection('userRegistry');
     //const collection = db.collection('sidebardata');
 
     // Define a route to fetch data
@@ -37,6 +39,19 @@ MongoClient.connect(uri)
         res.status(500).json({ error: 'Internal Server Error' });
       }
     })
+
+    app.post('/api/register', async (req, res) => {
+      //res.send('Post request received');
+      try {
+        const userData = req.body; // Assuming the client sends JSON data with user details
+        console.log(userData);
+        const result = await userRegistryCollection.insertOne(userData);
+        res.json({ success: true, message: 'User registered successfully', data: result});
+      } catch (error) {
+        console.error('Error registering user:', error);
+        res.status(500).json({ error: 'Internal Server Error' });
+      }
+    });
 
     // Start the server
     app.listen(PORT, () => {

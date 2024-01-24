@@ -15,6 +15,7 @@ import { createTheme, ThemeProvider } from '@mui/material/styles';
 import { Select, MenuItem } from '@mui/material';
 import { Radio, RadioGroup, InputLabel} from '@mui/material';
 import { useNavigate } from 'react-router-dom';
+import axios from 'axios';
 //import './EditUserPage.css'
 
 const defaultTheme = createTheme();
@@ -23,14 +24,29 @@ const defaultTheme = createTheme();
 export default function SignUp() {
   const navigate = useNavigate();
   const [designation, setDesignation] = React.useState('');
-  const handleSubmit = (event) => {
+  
+  const handleSubmit = async (event) => {
     event.preventDefault();
+    
     const data = new FormData(event.currentTarget);
-    console.log({
+    const userData = {
+      firstName: data.get('firstName'),
+      lastName: data.get('lastName'),
       email: data.get('email'),
       password: data.get('password'),
-      designation: data.get('designation'),
-    });
+      designation: designation,
+    };
+    console.log(userData);
+    
+    try{
+      const res = await axios.post('http://localhost:5000/api/register', userData);
+      console.log('User registered successfully:', res.data);
+    }
+    
+    catch (error) {
+      console.error('Error registering user:', error.message);
+      // Handle errors or show an error message to the user
+    }
   };
   
   const handleDesignationChange = (event) => {
