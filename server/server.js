@@ -4,6 +4,7 @@ const { MongoClient } = require('mongodb');
 const app = express();
 const PORT = process.env.PORT || 5000;
 const cors = require('cors');
+const { Try } = require('@mui/icons-material');
 
 app.use(cors());
 app.use(express.json());
@@ -17,6 +18,7 @@ MongoClient.connect(uri)
     console.log('Connected to MongoDB Atlas');
     const db = client.db('PharmaApp');
     const userRegistryCollection = db.collection('userRegistry');
+    const pendingRequestCollection = db.collection('pendingRequests');
     //const collection = db.collection('sidebardata');
 
     // Define a route to fetch data
@@ -52,6 +54,16 @@ MongoClient.connect(uri)
         res.status(500).json({ error: 'Internal Server Error' });
       }
     });
+
+    app.get('/api/pendingRequests', async(req,res)=>{
+      try {
+        const data = await pendingRequestCollection.find({}).toArray();
+        res.json(data);
+      } catch (error) {
+        console.log('Error fetching data:',error);
+        res.status(500).json({ error: 'Internal Server Error' });
+      }
+    })
 
     // Start the server
     app.listen(PORT, () => {

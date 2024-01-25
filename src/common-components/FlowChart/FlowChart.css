@@ -185,9 +185,10 @@
 
 .modal-button {
   display: flex;
-  flex-direction: row;
+  flex-direction: column;
   justify-content: space-evenly;
   width: 100%;
+  gap: 10px;
 }
 .modal-response-msg {
   display: flex;
@@ -242,3 +243,25 @@
   width: 100%;
   z-index: 1;
 }
+
+.approval-table {
+  width: 100%;
+  border-collapse: collapse; /* Collapse borders to avoid spacing between cells */
+}
+
+.approval-table th, .approval-table td {
+  border: 1px solid #dddddd; /* Add a 1px solid border around cells */
+  padding: 8px; /* Add padding for better appearance */
+}
+
+.approval-table th {
+  background-color: #f2f2f2; /* Add a background color for header cells */
+}
+
+.modal-button {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 10px;
+}
+

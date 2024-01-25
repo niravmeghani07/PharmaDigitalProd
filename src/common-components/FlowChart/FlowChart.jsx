@@ -155,6 +155,8 @@ function FlowChart(props) {
   const [isTechTransferModalOpen, setTechTransferModalOpen] = useState(false);
   const [isTemplateModalOpen_1, setTemplateModalOpen_1] = useState(false);
   const [isSaveDataopen,setSaveDataModalOpen] = useState(false)
+  const [pendingRequestCount, setpendingRequestCount] = useState(0);
+  const [pendingRequest,setPendingRequest] = useState([]);
 
   const [isApprovalRequestApproved, setIsApprovalRequestApproved] =
     useState(false);
@@ -636,8 +638,21 @@ function FlowChart(props) {
       }
 
     }
+
+    const fetchPendingRequest = async()=>{
+      try {
+        const response = await axios.get("http://localhost:5000/api/pendingRequests");
+        const pendingRequestCount = response.data.length;
+        console.log(pendingRequestCount);
+        setpendingRequestCount(pendingRequestCount);
+        setPendingRequest(response.data);
+      } catch (error) {
+        console.log("Error fetching the pending requests : ",error);
+      }
+    }
   // Set the retrieved array in the component state
   fetchData();
+  fetchPendingRequest();
 
     setNodes([]);
     setEdges([]);
@@ -736,7 +751,7 @@ function FlowChart(props) {
                 </div>
               </Tooltip>
               {userDesignation === 'Manager' &&(
-                <Badge badgeContent={2} color="error">
+                <Badge badgeContent={pendingRequestCount} color="error">
                <Tooltip title={"Approve"} arrow>
                 <div
                   onClick={() => handleGenericOpenModal("approval-modal")}
@@ -845,7 +860,7 @@ function FlowChart(props) {
               {!isApprovalRequestApproved && !isApprovalRequestDeclined ? (
                 <div className="modal-body">
                   <div className="modal-title">Approve Request</div>
-                  <div className="modal-input">
+                  {/* <div className="modal-input">
                     <TextField
                       id="outlined-multiline-static"
                       label="Description"
@@ -853,23 +868,49 @@ function FlowChart(props) {
                       rows={4}
                       sx={{ width: "100% !important" }}
                     />
-                  </div>
-                  <div className="modal-button">
-                    <Button
-                      variant="outlined"
-                      color="success"
-                      onClick={handleApproveRequest}
-                    >
-                      APPROVE
-                    </Button>
-                    <Button
-                      variant="outlined"
-                      color="error"
-                      onClick={handleDeclineRequest}
-                    >
-                      DECLINE
-                    </Button>
-                  </div>
+                  </div> */}
+                  {pendingRequest.length>0 ? (
+                    <table className="approval-table">
+                      <thead>
+                        <tr>
+                          <th>Sender</th>
+                          <th>Request</th>
+                          <th>Action</th>
+                        </tr>
+                      </thead>
+                      <tbody>
+                        {pendingRequest.map((request)=>(
+                          <tr key={request._id}>
+                           <td className="sender">{request.from}</td>
+                            <td className="request-data">
+                              {request.data}
+                            </td>
+                            <td className="action-buttons">
+                            <div className="modal-button">
+                                  <Button
+                                  variant="outlined"
+                                  color="success"
+                                  onClick={()=>handleApproveRequest(request._id)}
+                                >
+                                  APPROVE
+                                </Button>
+                                <Button
+                                  variant="outlined"
+                                  color="error"
+                                  onClick={()=>handleDeclineRequest(request._id)}
+                                >
+                                  DECLINE
+                                </Button>
+                              </div>
+                            </td>
+                          </tr>
+                    ))}
+                      </tbody>
+                    </table>
+                  ):(
+                  <div>No pending requests</div>
+                  )}
+                  
                 </div>
               ) : (
                 <></>
