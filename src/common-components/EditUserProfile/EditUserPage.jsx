@@ -41,6 +41,7 @@ export default function SignUp() {
     try{
       const res = await axios.post('http://localhost:5000/api/register', userData);
       console.log('User registered successfully:', res.data);
+      navigate('/login');
     }
     
     catch (error) {

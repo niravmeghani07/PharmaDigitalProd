@@ -4,7 +4,6 @@ const { MongoClient } = require('mongodb');
 const app = express();
 const PORT = process.env.PORT || 5000;
 const cors = require('cors');
-const { Try } = require('@mui/icons-material');
 
 app.use(cors());
 app.use(express.json());
@@ -19,6 +18,7 @@ MongoClient.connect(uri)
     const db = client.db('PharmaApp');
     const userRegistryCollection = db.collection('userRegistry');
     const pendingRequestCollection = db.collection('pendingRequests');
+    
     //const collection = db.collection('sidebardata');
 
     // Define a route to fetch data
@@ -43,12 +43,11 @@ MongoClient.connect(uri)
     })
 
     app.post('/api/register', async (req, res) => {
-      //res.send('Post request received');
       try {
         const userData = req.body; // Assuming the client sends JSON data with user details
         console.log(userData);
         const result = await userRegistryCollection.insertOne(userData);
-        res.json({ success: true, message: 'User registered successfully', data: result});
+        res.json({ success: true, message: 'User registered successfully', data: result });
       } catch (error) {
         console.error('Error registering user:', error);
         res.status(500).json({ error: 'Internal Server Error' });
@@ -61,6 +60,16 @@ MongoClient.connect(uri)
         res.json(data);
       } catch (error) {
         console.log('Error fetching data:',error);
+        res.status(500).json({ error: 'Internal Server Error' });
+      }
+    })
+
+    app.get('/api/register',async(req,res)=>{
+      try{
+        const data = await userRegistryCollection.find({}).toArray();
+        res.json(data);
+      } catch(error){
+        console.log('Could not found registerd users: ',error);
         res.status(500).json({ error: 'Internal Server Error' });
       }
     })
