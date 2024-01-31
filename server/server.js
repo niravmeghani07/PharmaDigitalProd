@@ -21,7 +21,7 @@ MongoClient.connect(uri)
     
     //const collection = db.collection('sidebardata');
 
-    // Define a route to fetch data
+    // SidebarData
     app.get('/api/sidebardata', async (req, res) => {
       try {
         const data = await db.collection('sidebardata').find({}).toArray();
@@ -32,6 +32,7 @@ MongoClient.connect(uri)
       }
     });
 
+    //Synthesis tree data
     app.get('/api/synthesisTreeData',async(req,res)=>{
       try {
          const data = await db.collection('synthesisTreeData').find({}).toArray();
@@ -42,6 +43,7 @@ MongoClient.connect(uri)
       }
     })
 
+    //User Registration 
     app.post('/api/register', async (req, res) => {
       try {
         const userData = req.body; // Assuming the client sends JSON data with user details
@@ -54,6 +56,20 @@ MongoClient.connect(uri)
       }
     });
 
+    //Send Request to the manager
+    app.post('/api/sendRequest', async(req,res)=>{
+      try{
+        const request = req.body;
+        const result = await pendingRequestCollection.insertOne(request);
+        res.json({ success: true, message: 'Request Sent successfully', data: result });
+      }
+      catch (error) {
+        console.error('Error sending Request:', error);
+        res.status(500).json({ error: 'Internal Server Error' });
+      }
+    })
+
+    //fetch the pendingRequests
     app.get('/api/pendingRequests', async(req,res)=>{
       try {
         const data = await pendingRequestCollection.find({}).toArray();
@@ -64,6 +80,7 @@ MongoClient.connect(uri)
       }
     })
 
+    //fetch the user details
     app.get('/api/register',async(req,res)=>{
       try{
         const data = await userRegistryCollection.find({}).toArray();

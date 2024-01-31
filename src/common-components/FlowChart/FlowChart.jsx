@@ -13,6 +13,7 @@ import SaveAltIcon from "@mui/icons-material/SaveAlt";
 import RequestApproval from "@mui/icons-material/MarkEmailRead";
 import ReportingIcon from "@mui/icons-material/Feed";
 import Tooltip from "@mui/material/Tooltip";
+import PendingIcon from '@mui/icons-material/Pending';
 import html2canvas from "html2canvas";
 import { toPng } from "html-to-image";
 import FolderSpecialIcon from "@mui/icons-material/FolderSpecial";
@@ -134,10 +135,12 @@ function FlowChart(props) {
   const [open, setOpen] = useState(false);
   const [urlContent, setUrlContent] = useState({});
   const [templateName, setTemplateName] = useState("");
-  const[email,setEmail]= useState("");
-  const[emailBody,setEmailBody] = useState("");
+  const[recipient,setRecipient]= useState("");
+  const[requestBody,setRequestBody] = useState("");
   const[synthesisTreeData,setsynthesisTreeData] = useState([]);
+  const[requestStatus,setRequestStatus] = useState()
   const userDesignation = sessionStorage.designation;
+  
 
   console.log(userDesignation);
 
@@ -151,17 +154,19 @@ function FlowChart(props) {
   const [undoClicked, setUndoClicked] = useState(0);
   const [isApprovalModalOpen, setApprovalModalOpen] = useState(false);
   const [isRequestModalOpen, setRequestModalOpen] = useState(false);
+  const [isPendigModalOpen, setPendingModalOpen] = useState(false);
   const [isTemplateModalOpen, setTemplateModalOpen] = useState(false);
   const [isTechTransferModalOpen, setTechTransferModalOpen] = useState(false);
   const [isTemplateModalOpen_1, setTemplateModalOpen_1] = useState(false);
   const [isSaveDataopen,setSaveDataModalOpen] = useState(false)
   const [pendingRequestCount, setpendingRequestCount] = useState(0);
   const [pendingRequest,setPendingRequest] = useState([]);
-
+  const [userPendingRequests,setuserPendingRequests] = useState([]);
   const [isApprovalRequestApproved, setIsApprovalRequestApproved] =
     useState(false);
   const [isApprovalRequestDeclined, setIsApprovalRequestDeclined] =
     useState(false);
+
   const username = sessionStorage.userName;
   const password = sessionStorage.password;
   const [isReportingRequestSend, setReportingIsRequestSend] = useState(false);
@@ -281,6 +286,9 @@ function FlowChart(props) {
       case "request-modal":
         setRequestModalOpen(true);
         break;
+      case "PendingRequest-modal":
+        setPendingModalOpen(true);
+        break;
       case "saveTemplate-modal":
         setTemplateModalOpen(true);
         break;
@@ -305,6 +313,9 @@ function FlowChart(props) {
       case "request-modal":
         setRequestModalOpen(false);
         setReportingIsRequestSend(false);
+        break;
+      case "PendingRequest-modal":
+        setPendingModalOpen(false);
         break;
       case "saveTemplate-modal":
         setTemplateModalOpen(false);
@@ -335,32 +346,48 @@ function FlowChart(props) {
     setReportingIsRequestSend(true);
   };
 
-  const handleSubmit= (e)=>{
+  const handleSubmit= async(e)=>{
     e.preventDefault();
-    
-
-    const serviceID = 'service_xtxbskr';
-    const templateID = 'template_i7pibko';
-    const publicKey = 'uQx6ja6xlQPOEZkn6';
-
-    //create object that has dynamic data for Email
-    const emailData = {
-      from_name:'Nirav Meghani',
-      from_email:'nc90762@gmail.com',
-      to_email:email,
-      to_name: 'RamKumar',
-      message: emailBody
+    const requestData = {
+      from: sessionStorage.userName,
+      to: recipient,
+      data: requestBody,
+      status: "Pending"
     }
-    emailjs.send(serviceID,templateID,emailData,publicKey)
-    .then((response)=>{
-      handletriggerEmailNotification();
-      console.log('Email Sent Successfully!', response);
-      setEmail('');
-      setEmailBody('');
-    })
-    .catch((err)=>console.log(err));
     
-    console.log(email);
+    try{
+      const res = await axios.post('http://localhost:5000/api/sendRequest', requestData);
+      console.log('Request sent successfully:', res.data);
+    }
+    
+    catch (error) {
+      console.error('Error in sending Request:', error.message);
+      // Handle errors or show an error message to the user
+    }
+    
+
+    // const serviceID = 'service_xtxbskr';
+    // const templateID = 'template_i7pibko';
+    // const publicKey = 'uQx6ja6xlQPOEZkn6';
+
+    // //create object that has dynamic data for Email
+    // const emailData = {
+    //   from_name:'Nirav Meghani',
+    //   from_email:'nc90762@gmail.com',
+    //   to_email:email,
+    //   to_name: 'RamKumar',
+    //   message: emailBody
+    // }
+    // emailjs.send(serviceID,templateID,emailData,publicKey)
+    // .then((response)=>{
+    //   handletriggerEmailNotification();
+    //   console.log('Email Sent Successfully!', response);
+    //   setEmail('');
+    //   setEmailBody('');
+    // })
+    // .catch((err)=>console.log(err));
+    
+    // console.log(email);
   }
 
 
@@ -641,11 +668,17 @@ function FlowChart(props) {
 
     const fetchPendingRequest = async()=>{
       try {
+        console.log(username);
         const response = await axios.get("http://localhost:5000/api/pendingRequests");
         const pendingRequestCount = response.data.length;
+        const requests = response.data
+        const userRequest = requests.find(request => request.from === username);
         console.log(pendingRequestCount);
+        console.log(requests);
+        console.log(userRequest);
         setpendingRequestCount(pendingRequestCount);
-        setPendingRequest(response.data);
+        setPendingRequest(requests);
+        setuserPendingRequests(userRequest);
       } catch (error) {
         console.log("Error fetching the pending requests : ",error);
       }
@@ -750,6 +783,7 @@ function FlowChart(props) {
                   />
                 </div>
               </Tooltip>
+
               {userDesignation === 'Manager' &&(
                 <Badge badgeContent={pendingRequestCount} color="error">
                <Tooltip title={"Approve"} arrow>
@@ -764,7 +798,8 @@ function FlowChart(props) {
                 </div>
               </Tooltip>
               </Badge>)}
-              {userDesignation !== 'Manager' &&(
+             
+            {userDesignation === 'Analyst' &&(
              <Tooltip title={"Reporting"} arrow>
                 <div
                   onClick={() => handleGenericOpenModal("request-modal")}
@@ -777,7 +812,22 @@ function FlowChart(props) {
                 </div>
               </Tooltip>)}
 
-              {userDesignation !== 'Manager' &&(
+              {userDesignation === 'Analyst' &&(
+                <Tooltip title={"Pending"} arrow>
+                  <div 
+                    onClick={()=>handleGenericOpenModal("PendingRequest-modal")}
+                    style={{ marginRight: "0.625rem" }}
+                  >
+                    <PendingIcon 
+                    fontSize="large"
+                    style={{ cursor: "pointer" }}
+                  />
+                </div>
+                </Tooltip>
+              )
+              }
+
+              {userDesignation === 'Analyst' &&(
               <Tooltip title={"Save"} arrow>
                 <div 
                 onClick={()=>handleGenericOpenModal("saveData-modal")}
@@ -792,6 +842,7 @@ function FlowChart(props) {
                   />
                 </div>
               </Tooltip>)}
+
               <Tooltip title={"Save as Template"} arrow>
                 <div
                   onClick={() => handleGenericOpenModal("saveTemplate-modal")}
@@ -936,15 +987,15 @@ function FlowChart(props) {
                     <TextField
                       id="outlined-multiline-static"
                       label="Email"
-                      value={email}
-                      onChange={(e)=>setEmail(e.target.value)}
+                      value={recipient}
+                      onChange={(e)=>setRecipient(e.target.value)}
                       sx={{ width: "100% !important", marginBottom: "10px" }}
                     />
                     <TextField
                       id="outlined-multiline-static"
                       label="Description"
-                      value={emailBody}
-                      onChange={(e)=>setEmailBody(e.target.value)}
+                      value={requestBody}
+                      onChange={(e)=>setRequestBody(e.target.value)}
                       multiline
                       rows={4}
                       sx={{ width: "100% !important" }}
@@ -968,6 +1019,58 @@ function FlowChart(props) {
           }
         />
       )}
+     {isPendigModalOpen && (
+      <GenericModal
+         open={isPendigModalOpen}
+          handleClose={() => handleGenericCloseModal("PendingRequest-modal")}
+          body={
+      <div>
+        {userPendingRequests.length > 0 ? (
+          <table className="approval-table">
+            <thead>
+              <tr>
+                <th>Sender</th>
+                <th>Request</th>
+                <th>Status</th>
+              </tr>
+            </thead>
+            <tbody>
+              {userPendingRequests.map((request) => (
+                <tr key={request._id}>
+                  <td className="sender">{request.to}</td>
+                  <td className="request-data">{request.data}</td>
+                  <td className="status">
+                    <div className="modal-button">
+                      {request.status === 'approved' && (
+                        <Button variant="outlined" color="success">
+                          Approved
+                        </Button>
+                      )}
+                      {request.status === 'pending' && (
+                        <Button variant="outlined" color="warning">
+                          Pending
+                        </Button>
+                      )}
+                      {request.status === 'declined' && (
+                        <Button variant="outlined" color="error">
+                          Declined
+                        </Button>
+                      )}
+                    </div>
+                  </td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        ) : (
+          // Handle the case where userPendingRequests is empty
+          <p>No data available</p>
+        )}
+      </div>
+    }
+  ></GenericModal>
+)}
+
       {isTemplateModalOpen && (
         <GenericModal
           open={isTemplateModalOpen}
