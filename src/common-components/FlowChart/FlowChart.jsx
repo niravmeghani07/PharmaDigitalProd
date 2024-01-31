@@ -159,9 +159,10 @@ function FlowChart(props) {
   const [isTechTransferModalOpen, setTechTransferModalOpen] = useState(false);
   const [isTemplateModalOpen_1, setTemplateModalOpen_1] = useState(false);
   const [isSaveDataopen,setSaveDataModalOpen] = useState(false)
-  const [pendingRequestCount, setpendingRequestCount] = useState(0);
-  const [pendingRequest,setPendingRequest] = useState([]);
+  const [managerPendingRequestCount, setmanagerPendingRequestCount] = useState(0);
+  const [managerPendingRequest,setmanagerPendingRequest] = useState([]);
   const [userPendingRequests,setuserPendingRequests] = useState([]);
+  const [userPendingRequestCount,setuserPendingRequestCount] = useState(0);
   const [isApprovalRequestApproved, setIsApprovalRequestApproved] =
     useState(false);
   const [isApprovalRequestDeclined, setIsApprovalRequestDeclined] =
@@ -670,15 +671,20 @@ function FlowChart(props) {
       try {
         console.log(username);
         const response = await axios.get("http://localhost:5000/api/pendingRequests");
-        const pendingRequestCount = response.data.length;
-        const requests = response.data
-        const userRequest = requests.find(request => request.from === username);
-        console.log(pendingRequestCount);
-        console.log(requests);
-        console.log(userRequest);
-        setpendingRequestCount(pendingRequestCount);
-        setPendingRequest(requests);
+        const requests = response.data;
+        const pendingRequestCount = requests.length;
+        const userRequest = requests.filter(request => request.from === username);
+        const managerRequest = requests.filter(request => request.to === username);
+        const userRequestCount = userRequest.length;
+        const managerRequestCount = managerRequest.length;
+        // console.log(pendingRequestCount);
+        // console.log(requests);
+        // console.log(userRequest);
+
+        setmanagerPendingRequestCount(managerRequestCount);
+        setmanagerPendingRequest(managerRequest);
         setuserPendingRequests(userRequest);
+        setuserPendingRequestCount(userRequestCount);
       } catch (error) {
         console.log("Error fetching the pending requests : ",error);
       }
@@ -785,7 +791,7 @@ function FlowChart(props) {
               </Tooltip>
 
               {userDesignation === 'Manager' &&(
-                <Badge badgeContent={pendingRequestCount} color="error">
+                <Badge badgeContent={managerPendingRequestCount} color="error">
                <Tooltip title={"Approve"} arrow>
                 <div
                   onClick={() => handleGenericOpenModal("approval-modal")}
@@ -813,6 +819,7 @@ function FlowChart(props) {
               </Tooltip>)}
 
               {userDesignation === 'Analyst' &&(
+                <Badge badgeContent={userPendingRequestCount} color="error">
                 <Tooltip title={"Pending"} arrow>
                   <div 
                     onClick={()=>handleGenericOpenModal("PendingRequest-modal")}
@@ -824,6 +831,7 @@ function FlowChart(props) {
                   />
                 </div>
                 </Tooltip>
+                </Badge>
               )
               }
 
@@ -920,7 +928,7 @@ function FlowChart(props) {
                       sx={{ width: "100% !important" }}
                     />
                   </div> */}
-                  {pendingRequest.length>0 ? (
+                  {managerPendingRequest.length>0 ? (
                     <table className="approval-table">
                       <thead>
                         <tr>
@@ -930,7 +938,7 @@ function FlowChart(props) {
                         </tr>
                       </thead>
                       <tbody>
-                        {pendingRequest.map((request)=>(
+                        {managerPendingRequest.map((request)=>(
                           <tr key={request._id}>
                            <td className="sender">{request.from}</td>
                             <td className="request-data">
@@ -1020,16 +1028,16 @@ function FlowChart(props) {
         />
       )}
      {isPendigModalOpen && (
-      <GenericModal
-         open={isPendigModalOpen}
-          handleClose={() => handleGenericCloseModal("PendingRequest-modal")}
-          body={
+  <GenericModal
+    open={isPendigModalOpen}
+    handleClose={() => handleGenericCloseModal("PendingRequest-modal")}
+    body={
       <div>
         {userPendingRequests.length > 0 ? (
           <table className="approval-table">
             <thead>
               <tr>
-                <th>Sender</th>
+                <th>To</th>
                 <th>Request</th>
                 <th>Status</th>
               </tr>
@@ -1041,17 +1049,17 @@ function FlowChart(props) {
                   <td className="request-data">{request.data}</td>
                   <td className="status">
                     <div className="modal-button">
-                      {request.status === 'approved' && (
+                      {request.status === 'Approved' && (
                         <Button variant="outlined" color="success">
                           Approved
                         </Button>
                       )}
-                      {request.status === 'pending' && (
+                      {request.status === 'Pending' && (
                         <Button variant="outlined" color="warning">
                           Pending
                         </Button>
                       )}
-                      {request.status === 'declined' && (
+                      {request.status === 'Declined' && (
                         <Button variant="outlined" color="error">
                           Declined
                         </Button>
@@ -1063,13 +1071,14 @@ function FlowChart(props) {
             </tbody>
           </table>
         ) : (
-          // Handle the case where userPendingRequests is empty
+          // Handle the case where requiredUserData is empty
           <p>No data available</p>
         )}
       </div>
     }
   ></GenericModal>
 )}
+
 
       {isTemplateModalOpen && (
         <GenericModal
