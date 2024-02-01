@@ -334,9 +334,9 @@ function FlowChart(props) {
 
 
   const handleApproveRequest = async (request) => {
-    console.log("data.==>"+request._id);
+    console.log("data.==>"+request.data);
     const userData = {
-      _id: request._id,
+      data: request.data,
     };
     console.log(userData);
     try{
@@ -354,9 +354,9 @@ function FlowChart(props) {
   };
 
   const handleDeclineRequest = async (request) => {
-    console.log("data.==>"+request._id);
+   console.log("data.==>"+request.data);
     const userData = {
-      _id: request._id,
+      data: request.data,
     };
     console.log(userData);
     try{
