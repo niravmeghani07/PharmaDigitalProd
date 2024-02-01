@@ -349,8 +349,8 @@ function FlowChart(props) {
       // Handle errors or show an error message to the user
     }
 
-    //setIsApprovalRequestApproved(true);
-    //setIsApprovalRequestDeclined(false);
+    setIsApprovalRequestApproved(true);
+    setIsApprovalRequestDeclined(false);
   };
 
   const handleDeclineRequest = async (request) => {
@@ -369,16 +369,17 @@ function FlowChart(props) {
       // Handle errors or show an error message to the user
     }
 
-    //setIsApprovalRequestDeclined(true);
-   // setIsApprovalRequestApproved(false);
+    setIsApprovalRequestDeclined(true);
+    setIsApprovalRequestApproved(false);
   };
 
-  const handletriggerEmailNotification = () => {
+  const handlesubmitRequest = () => {
     setReportingIsRequestSend(true);
   };
 
   const handleSubmit= async(e)=>{
     e.preventDefault();
+    setReportingIsRequestSend(true);
     const requestData = {
       from: sessionStorage.userName,
       to: recipient,
@@ -705,8 +706,8 @@ function FlowChart(props) {
         const pendingRequestCount = requests.length;
         const userRequest = requests.filter(request => request.from === username);
         const managerRequest = requests.filter(request => request.to === username);
-        const userRequestCount = userRequest.length;
-        const managerRequestCount = managerRequest.length;
+        const userRequestCount = userRequest.filter(request => request.status === 'Pending').length;
+        const managerRequestCount = managerRequest.filter(request => request.status === 'Pending').length;
         // console.log(pendingRequestCount);
         // console.log(requests);
         // console.log(userRequest);
@@ -975,7 +976,8 @@ function FlowChart(props) {
                               {request.data}
                             </td>
                             <td className="action-buttons">
-                            <div className="modal-button">
+                            {request.status === 'Pending' ?(
+                              <div className="modal-button">
                                   <Button
                                   variant="outlined"
                                   color="success"
@@ -991,6 +993,11 @@ function FlowChart(props) {
                                   DECLINE
                                 </Button>
                               </div>
+                            ):(
+                              <p style={{ color: request.status === 'Approved' ? 'green' : 'red' }}>
+                                {request.status}
+                              </p>
+                            )} 
                             </td>
                           </tr>
                     ))}
@@ -1024,7 +1031,7 @@ function FlowChart(props) {
                   <div className="modal-input">
                     <TextField
                       id="outlined-multiline-static"
-                      label="Email"
+                      label="To"
                       value={recipient}
                       onChange={(e)=>setRecipient(e.target.value)}
                       sx={{ width: "100% !important", marginBottom: "10px" }}
@@ -1080,19 +1087,19 @@ function FlowChart(props) {
                   <td className="status">
                     <div className="modal-button">
                       {request.status === 'Approved' && (
-                        <Button variant="outlined" color="success">
+                        <p style={{ color: 'green' }}>
                           Approved
-                        </Button>
+                        </p>
                       )}
                       {request.status === 'Pending' && (
-                        <Button variant="outlined" color="warning">
+                        <p style={{ color: 'orange' }}>
                           Pending
-                        </Button>
+                        </p>
                       )}
                       {request.status === 'Declined' && (
-                        <Button variant="outlined" color="error">
+                        <p style={{ color: 'red' }}>
                           Declined
-                        </Button>
+                        </p>
                       )}
                     </div>
                   </td>
