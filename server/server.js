@@ -56,8 +56,52 @@ MongoClient.connect(uri)
       }
     });
 
-    //Send Request to the manager
-    app.post('/api/sendRequest', async(req,res)=>{
+    app.post('/api/approvestatusupdate', async(req, res) => {
+      try {
+        
+        const taskId = req.body; // Assuming the client sends JSON data with user details
+        console.log(taskId);
+        const filter = taskId;
+    const update = { $set: { "status": "Approved" } };
+
+    const postresult = await pendingRequestCollection.updateOne(filter, update);
+
+    if (postresult.modifiedCount === 1) {
+      res.json({success: true, message: 'Approved', data: postresult });
+      console.log('Document updated successfully');
+    } else {
+      console.log('Document not found or not updated');
+    }
+      } catch (error) {
+        console.error('Error approving the task:', error);
+        res.status(500).json({ error: 'Internal Server Error' });
+      }
+    });
+
+    app.post('/api/declinestatusupdate', async(req, res) => {
+      try {
+        
+        const taskId = req.body; // Assuming the client sends JSON data with user details
+        console.log(taskId);
+        const filter = taskId;
+    const update = { $set: { "status": "Declined" } };
+
+    const postresult = await pendingRequestCollection.updateOne(filter, update);
+
+    if (postresult.modifiedCount === 1) {
+      res.json({success: true, message: 'Declined', data: postresult });
+      console.log('Document updated successfully');
+    } else {
+      console.log('Document not found or not updated');
+    }
+      } catch (error) {
+        console.error('Error Decline the task:', error);
+        res.status(500).json({ error: 'Internal Server Error' });
+      }
+    });
+
+     //Send Request to the manager
+     app.post('/api/sendRequest', async(req,res)=>{
       try{
         const request = req.body;
         const result = await pendingRequestCollection.insertOne(request);

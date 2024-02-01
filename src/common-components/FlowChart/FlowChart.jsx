@@ -333,14 +333,44 @@ function FlowChart(props) {
   };
 
 
-  const handleApproveRequest = () => {
-    setIsApprovalRequestApproved(true);
-    setIsApprovalRequestDeclined(false);
+  const handleApproveRequest = async (request) => {
+    console.log("data.==>"+request._id);
+    const userData = {
+      _id: request._id,
+    };
+    console.log(userData);
+    try{
+      const res = await axios.post('http://localhost:5000/api/approvestatusupdate', userData);
+      console.log('User registered successfully:', res.data);
+    }
+    
+    catch (error) {
+      console.error('Error approve status:', error.message);
+      // Handle errors or show an error message to the user
+    }
+
+    //setIsApprovalRequestApproved(true);
+    //setIsApprovalRequestDeclined(false);
   };
 
-  const handleDeclineRequest = () => {
-    setIsApprovalRequestDeclined(true);
-    setIsApprovalRequestApproved(false);
+  const handleDeclineRequest = async (request) => {
+    console.log("data.==>"+request._id);
+    const userData = {
+      _id: request._id,
+    };
+    console.log(userData);
+    try{
+      const res = await axios.post('http://localhost:5000/api/declinestatusupdate', userData);
+      console.log('User registered successfully:', res.data);
+    }
+    
+    catch (error) {
+      console.error('Error approve status:', error.message);
+      // Handle errors or show an error message to the user
+    }
+
+    //setIsApprovalRequestDeclined(true);
+   // setIsApprovalRequestApproved(false);
   };
 
   const handletriggerEmailNotification = () => {
@@ -949,14 +979,14 @@ function FlowChart(props) {
                                   <Button
                                   variant="outlined"
                                   color="success"
-                                  onClick={()=>handleApproveRequest(request._id)}
+                                  onClick={()=>handleApproveRequest(request)}
                                 >
                                   APPROVE
                                 </Button>
                                 <Button
                                   variant="outlined"
                                   color="error"
-                                  onClick={()=>handleDeclineRequest(request._id)}
+                                  onClick={()=>handleDeclineRequest(request)}
                                 >
                                   DECLINE
                                 </Button>
