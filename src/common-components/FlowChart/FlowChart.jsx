@@ -38,7 +38,7 @@ import Button from "@mui/material/Button";
 import emailjs from "@emailjs/browser";
 import AsiaFlowChartData from "../../constants/AsiaData/TempraryAsiaFlowChart";
 //import AsiaMainTreeData from "../../constants/AsiaData/TempraryAsiaMainTreeData";
-
+import Autocomplete from '@mui/material/Autocomplete';
 import { instance as axios } from "../../services/root-service";
 import cheerio from "cheerio";
 
@@ -171,6 +171,7 @@ function FlowChart(props) {
   const username = sessionStorage.userName;
   const password = sessionStorage.password;
   const [isReportingRequestSend, setReportingIsRequestSend] = useState(false);
+  const [email, setEmail] = useState([]);
 
   const handleRestoreClick = (restoredNodes, restoredEdges) => {
     setNodes(restoredNodes);
@@ -348,7 +349,8 @@ function FlowChart(props) {
       console.error('Error approve status:', error.message);
       // Handle errors or show an error message to the user
     }
-
+    setTimeout(() => {  window.location.reload();     }, 5000);
+    //window.location.reload();
     setIsApprovalRequestApproved(true);
     setIsApprovalRequestDeclined(false);
   };
@@ -368,7 +370,8 @@ function FlowChart(props) {
       console.error('Error approve status:', error.message);
       // Handle errors or show an error message to the user
     }
-
+    setTimeout(() => {  window.location.reload();     }, 5000);
+   // window.location.reload();
     setIsApprovalRequestDeclined(true);
     setIsApprovalRequestApproved(false);
   };
@@ -390,6 +393,10 @@ function FlowChart(props) {
     try{
       const res = await axios.post('http://localhost:5000/api/sendRequest', requestData);
       console.log('Request sent successfully:', res.data);
+     // const [isLoading, setIsLoading] = useState(false);
+     // setIsLoading(true)
+     // window.location.reload();
+      setTimeout(() => {  window.location.reload();     }, 5000);
     }
     
     catch (error) {
@@ -421,6 +428,26 @@ function FlowChart(props) {
     
     // console.log(email);
   }
+
+  React.useEffect(() => {
+    const fetchOptions = async () => {
+      try {
+        const response = await axios.get("http://localhost:5000/api/register");
+        const extractedEmails = response.data.map(item => item.firstName);
+        console.log("extractedEmails===>"+extractedEmails);
+        setEmail(extractedEmails); // Assuming the response.data is an array of options
+        console.log("email===>"+email);
+      } catch (error) {
+        console.error('Error fetching data from MongoDB:', error);
+      }
+    };
+
+    fetchOptions();
+  }, []);
+
+  const handleInputChange = (event, newInputValue) => {
+    setRecipient(newInputValue);
+  };
 
 
   const handleSaveTemplate = () => {
@@ -720,9 +747,9 @@ function FlowChart(props) {
         console.log("Error fetching the pending requests : ",error);
       }
     }
-  // Set the retrieved array in the component state
-  fetchData();
-  fetchPendingRequest();
+    // Set the retrieved array in the component state
+    fetchData();
+    fetchPendingRequest();
 
     setNodes([]);
     setEdges([]);
@@ -1029,13 +1056,22 @@ function FlowChart(props) {
                   <form onSubmit={handleSubmit}>
                   <div className="modal-title">Request Approval</div>
                   <div className="modal-input">
-                    <TextField
-                      id="outlined-multiline-static"
-                      label="To"
+                    <Autocomplete
+                      disablePortal
+                      id="combo-box-demo"
+                      options={email}
+                      sx={{ width: "120% !important", marginBottom: "10px" }}
+                      renderInput={(params) => <TextField
+                        {...params}
+                        id="outlined-multiline-static"
+                        label="To"
+                       // value={recipient}
+                        onChange={(e)=>handleInputChange(e,e.target.value)}
+                      />}
                       value={recipient}
-                      onChange={(e)=>setRecipient(e.target.value)}
-                      sx={{ width: "100% !important", marginBottom: "10px" }}
+                      onChange={(event, newValue) => setRecipient(newValue)}
                     />
+                    
                     <TextField
                       id="outlined-multiline-static"
                       label="Description"
@@ -1043,7 +1079,7 @@ function FlowChart(props) {
                       onChange={(e)=>setRequestBody(e.target.value)}
                       multiline
                       rows={4}
-                      sx={{ width: "100% !important" }}
+                      sx={{ width: "120% !important" }}
                     />
                   </div>
                   <div className="modal-button">
