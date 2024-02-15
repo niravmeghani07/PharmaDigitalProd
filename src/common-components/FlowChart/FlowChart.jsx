@@ -140,6 +140,7 @@ function FlowChart(props) {
   const[synthesisTreeData,setsynthesisTreeData] = useState([]);
   const[requestStatus,setRequestStatus] = useState()
   const userDesignation = sessionStorage.designation;
+  const[comments,setComments] = useState("");
   
 
   console.log(userDesignation);
@@ -338,6 +339,8 @@ function FlowChart(props) {
     console.log("data.==>"+request.data);
     const userData = {
       data: request.data,
+      comment: comments,
+      statusModifiedData: new Date
     };
     console.log(userData);
     try{
@@ -359,6 +362,8 @@ function FlowChart(props) {
    console.log("data.==>"+request.data);
     const userData = {
       data: request.data,
+      comment: comments,
+      statusModifiedData: new Date
     };
     console.log(userData);
     try{
@@ -387,7 +392,9 @@ function FlowChart(props) {
       from: sessionStorage.userName,
       to: recipient,
       data: requestBody,
-      status: "Pending"
+      status: "Pending",
+      comment: "",
+      statusModifiedData: new Date()
     }
     
     try{
@@ -936,14 +943,14 @@ function FlowChart(props) {
               ref={reactFlowWrapper}
               style={{ height: "40vh", width: "100%" }}
             >
-              <ReactFlow
-                nodes={nodes}
+             <ReactFlow
+               nodes={nodes}
                 edges={edges}
                 onNodesChange={onNodesChange}
                 onEdgesChange={onEdgesChange}
                 onConnect={onConnect}
                 onNodeClick={onNodeClick}
-              >
+              > 
             {isReportingRequestSend ? (
                 <Controls showInteractive='false' />
                  ) : (
@@ -993,6 +1000,7 @@ function FlowChart(props) {
                           <th>Sender</th>
                           <th>Request</th>
                           <th>Action</th>
+                          <th>Comments</th>
                         </tr>
                       </thead>
                       <tbody>
@@ -1023,6 +1031,25 @@ function FlowChart(props) {
                             ):(
                               <p style={{ color: request.status === 'Approved' ? 'green' : 'red' }}>
                                 {request.status}
+                              </p>
+                            )} 
+                            </td>
+                            <td className="comment-textBox">
+                            {request.status === 'Pending' ?(
+                              <div className="modal-button">
+                                 <TextField
+                                      id="comments-multiline-static"
+                                      value={comments}
+                                      onChange={(e)=>setComments(e.target.value)}
+                                      multiline
+                                      rows={4}
+                                      sx={{ width: "100% !important" }}
+                                />
+                               
+                              </div>
+                            ):(
+                              <p>
+                                {request.comment}
                               </p>
                             )} 
                             </td>
@@ -1113,6 +1140,7 @@ function FlowChart(props) {
                 <th>To</th>
                 <th>Request</th>
                 <th>Status</th>
+                <th>Comments</th>
               </tr>
             </thead>
             <tbody>
@@ -1139,6 +1167,7 @@ function FlowChart(props) {
                       )}
                     </div>
                   </td>
+                  <td className="request-comments">{request.comment}</td>
                 </tr>
               ))}
             </tbody>

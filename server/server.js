@@ -61,8 +61,10 @@ MongoClient.connect(uri)
         
         const taskId = req.body; // Assuming the client sends JSON data with user details
         console.log(taskId);
-        const filter = taskId;
-    const update = { $set: { "status": "Approved" } };
+        const filter = {
+          data: taskId.data
+        };
+    const update = { $set: { "status": "Approved" ,"comment": taskId.comment, "statusModifiedData": taskId.statusModifiedData} };
 
     const postresult = await pendingRequestCollection.updateOne(filter, update);
 
@@ -83,8 +85,10 @@ MongoClient.connect(uri)
         
         const taskId = req.body; // Assuming the client sends JSON data with user details
         console.log(taskId);
-        const filter = taskId;
-    const update = { $set: { "status": "Declined" } };
+        const filter = {
+          data: taskId.data
+        };
+     const update = { $set: { "status": "Declined" ,"comment": taskId.comment, "statusModifiedData": taskId.statusModifiedData} };
 
     const postresult = await pendingRequestCollection.updateOne(filter, update);
 
