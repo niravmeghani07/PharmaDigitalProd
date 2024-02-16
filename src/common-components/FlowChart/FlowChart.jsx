@@ -1,4 +1,5 @@
 import "./FlowChart.css";
+import { HashRouter, HashLink } from 'react-router-dom';
 import React, { useRef } from "react";
 import { useState, useCallback } from "react";
 import ProcessOperation from "../../components/ProcessOperation/ProcessOperation.jsx";
@@ -41,6 +42,10 @@ import AsiaFlowChartData from "../../constants/AsiaData/TempraryAsiaFlowChart";
 import Autocomplete from '@mui/material/Autocomplete';
 import { instance as axios } from "../../services/root-service";
 import cheerio from "cheerio";
+import InputLabel from '@mui/material/InputLabel';
+import MenuItem from '@mui/material/MenuItem';
+import FormControl from '@mui/material/FormControl';
+import Select from '@mui/material/Select';
 
 const initialNodes = [
   // { id: "1", position: { x: 100, y: 100 }, data: { label: "Mixing" } },
@@ -141,6 +146,8 @@ function FlowChart(props) {
   const[requestStatus,setRequestStatus] = useState()
   const userDesignation = sessionStorage.designation;
   const[comments,setComments] = useState("");
+  const[isNavigated,setisNavigated] = useState(false);
+  const[drug,setDrug] = useState("");
   
 
   console.log(userDesignation);
@@ -393,6 +400,7 @@ function FlowChart(props) {
       to: recipient,
       data: requestBody,
       status: "Pending",
+      drug: drug,
       comment: "",
       statusModifiedData: new Date()
     }
@@ -783,6 +791,16 @@ function FlowChart(props) {
     setIsOpen(!isOpen);
   };
 
+  const handleRequestDataClick = (e) =>{
+    e.preventDefault();
+    setisNavigated(true);
+    // Navigate to a new page
+    window.open('/new-page', '_blank');
+  }
+
+  const handleChange = (event) => {
+    setDrug(event.target.value);
+  };
   const handleSelect = (name) => {
     setSelectedTechSite(name);
     toggleDropdown();
@@ -934,6 +952,8 @@ function FlowChart(props) {
               </Tooltip>
             </div>
           </div>
+          <div>
+          {/* {(userDesignation !== 'Manager' || isNavigated) && ( */}
           <div
             className="process-stage-item"
             onDragOver={(e) => e.preventDefault()}
@@ -943,7 +963,7 @@ function FlowChart(props) {
               ref={reactFlowWrapper}
               style={{ height: "40vh", width: "100%" }}
             >
-             <ReactFlow
+            <ReactFlow
                nodes={nodes}
                 edges={edges}
                 onNodesChange={onNodesChange}
@@ -951,7 +971,7 @@ function FlowChart(props) {
                 onConnect={onConnect}
                 onNodeClick={onNodeClick}
               > 
-            {isReportingRequestSend ? (
+              {isReportingRequestSend ? (
                 <Controls showInteractive='false' />
                  ) : (
                     <Controls />
@@ -959,10 +979,12 @@ function FlowChart(props) {
               </ReactFlow>
             </div>
           </div>
+          
           <ProcessOperation
             selectedProcessStageID={selectedProcessStageID}
             className="process-stage-item"
           />
+        </div>
         </div>
       </div>
       {isApprovalModalOpen && (
@@ -994,11 +1016,13 @@ function FlowChart(props) {
                     />
                   </div> */}
                   {managerPendingRequest.length>0 ? (
+                  
                     <table className="approval-table">
                       <thead>
                         <tr>
                           <th>Sender</th>
                           <th>Request</th>
+                          <th>Drug</th>
                           <th>Action</th>
                           <th>Comments</th>
                         </tr>
@@ -1010,6 +1034,7 @@ function FlowChart(props) {
                             <td className="request-data">
                               {request.data}
                             </td>
+                            <td className="drug">{request.drug}</td>
                             <td className="action-buttons">
                             {request.status === 'Pending' ?(
                               <div className="modal-button">
@@ -1057,6 +1082,7 @@ function FlowChart(props) {
                     ))}
                       </tbody>
                     </table>
+                
                   ):(
                   <div>No pending requests</div>
                   )}
@@ -1099,6 +1125,21 @@ function FlowChart(props) {
                       onChange={(event, newValue) => setRecipient(newValue)}
                     />
                     
+                    <FormControl sx={{ width: "120% !important", marginBottom: "10px" }}>
+                      <InputLabel id="demo-simple-select-autowidth-label">Drug</InputLabel>
+                      <Select
+                      labelId="demo-simple-select-autowidth-label"
+                      id="demo-simple-select-autowidth"
+                      value={drug}
+                      onChange={handleChange}
+                      autoWidth
+                      label="drug"
+                      >
+                      <MenuItem value={'Pembrolizumab'}>Pembrolizumab</MenuItem>
+                      </Select>
+                      </FormControl>
+                      </div>
+                        
                     <TextField
                       id="outlined-multiline-static"
                       label="Description"
@@ -1108,7 +1149,7 @@ function FlowChart(props) {
                       rows={4}
                       sx={{ width: "120% !important" }}
                     />
-                  </div>
+                 
                   <div className="modal-button">
                     <Button
                       variant="outlined"
