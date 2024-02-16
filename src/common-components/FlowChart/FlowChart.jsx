@@ -795,7 +795,7 @@ function FlowChart(props) {
     e.preventDefault();
     setisNavigated(true);
     // Navigate to a new page
-    window.open('/new-page', '_blank');
+    window.open(`/${drug}`, '_blank');
   }
 
   const handleChange = (event) => {
@@ -954,6 +954,7 @@ function FlowChart(props) {
           </div>
           <div>
           {/* {(userDesignation !== 'Manager' || isNavigated) && ( */}
+          {(!((window.location.href.includes("/PharmaDigitalProd")) && (userDesignation === 'Manager')))&& (
           <div
             className="process-stage-item"
             onDragOver={(e) => e.preventDefault()}
@@ -975,11 +976,11 @@ function FlowChart(props) {
                 <Controls showInteractive='false' />
                  ) : (
                     <Controls />
-                            )}
+                      )}
               </ReactFlow>
             </div>
           </div>
-          
+          )}
           <ProcessOperation
             selectedProcessStageID={selectedProcessStageID}
             className="process-stage-item"
@@ -1034,7 +1035,11 @@ function FlowChart(props) {
                             <td className="request-data">
                               {request.data}
                             </td>
-                            <td className="drug">{request.drug}</td>
+                            <td className="drug">
+                            <a href={"#"} onClick={(e) => handleRequestDataClick(e)}>
+                                {request.drug}
+                               </a>
+                            </td>
                             <td className="action-buttons">
                             {request.status === 'Pending' ?(
                               <div className="modal-button">
