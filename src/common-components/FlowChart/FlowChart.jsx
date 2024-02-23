@@ -1185,6 +1185,7 @@ function FlowChart(props) {
               <tr>
                 <th>To</th>
                 <th>Request</th>
+                <th>Drug</th>
                 <th>Status</th>
                 <th>Comments</th>
               </tr>
@@ -1193,7 +1194,12 @@ function FlowChart(props) {
               {userPendingRequests.map((request) => (
                 <tr key={request._id}>
                   <td className="sender">{request.to}</td>
-                  <td className="request-data">{request.data}</td>
+                 <td className="request-data">{request.data}</td>
+                            <td className="drug">
+                            <a href={"#"} onClick={(e) => handleRequestDataClick(e)}>
+                                {request.drug}
+                               </a>
+                            </td>
                   <td className="status">
                     <div className="modal-button">
                       {request.status === 'Approved' && (
