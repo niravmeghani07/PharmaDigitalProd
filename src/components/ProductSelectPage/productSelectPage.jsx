@@ -8,6 +8,7 @@ import Sidebar from '../../common-components/SideBar/SideBar';
 import { useNavigate } from 'react-router-dom';
 import { Button } from '@mui/material';
 import Paper from '@mui/material/Paper';
+import "./productSelectPage.css";
 
 export default function SelectAutoWidth() {
   const navigate = useNavigate();
@@ -42,7 +43,7 @@ export default function SelectAutoWidth() {
       padding: '0 20px', // Add padding to provide spacing
     }}
   >
-    <Paper elevation={3} sx={{ p: 2, maxWidth: 800, textAlign: 'center' }}>
+    <Paper elevation={3} sx={{ p: 2, maxWidth: 1000, textAlign: 'center' }}>
       <p sx={{ mt: 2, mb: 2 }}>Select your Drug</p>
       <div style={{ width: '100%', display: 'flex', justifyContent: 'center' }}>
         {/* Centering the drug selection components */}
@@ -57,7 +58,7 @@ export default function SelectAutoWidth() {
             label="drug"
           >
             <MenuItem value="">
-              <em>None</em>
+              {/* <em>None</em> */}
             </MenuItem>
             <MenuItem value={'Pembrolizumab'}>Pembrolizumab</MenuItem>
             <MenuItem value={'Oxide'}>Oxide</MenuItem>
