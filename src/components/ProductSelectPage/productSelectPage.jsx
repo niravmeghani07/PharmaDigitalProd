@@ -9,6 +9,8 @@ import { useNavigate } from 'react-router-dom';
 import { Button } from '@mui/material';
 import Paper from '@mui/material/Paper';
 import "./productSelectPage.css";
+import userEvent from '@testing-library/user-event';
+import { useEffect } from 'react';
 
 export default function SelectAutoWidth() {
   const navigate = useNavigate();
@@ -18,6 +20,13 @@ export default function SelectAutoWidth() {
     setDrug(event.target.value);
   };
 
+  useEffect(() => {
+    // Perform navigation when component mounts
+    if (sessionStorage.designation !== "Analyst") {
+      navigate('/dashboard');
+    }
+  }, []);
+
   const handleClick = () => {
     navigate('/dashboard');
   };
@@ -25,11 +34,13 @@ export default function SelectAutoWidth() {
   const handleNewDrug = () => {
     navigate('/newDrug');
   };
+  console.log(sessionStorage.designation);
 
   return (
     <>
+    {sessionStorage.designation === "Analyst" ? (
     <div style={{ display: 'flex', height: '100vh' }}>
-  <div className="sidebar">
+    <div className="sidebar">
     <Header />
     <Sidebar /> 
   </div>
@@ -88,7 +99,9 @@ export default function SelectAutoWidth() {
     </Paper>
   </div>
 </div>
+) : null }
 
-    </>
-  );
+</>
+);
 }
+
