@@ -1110,7 +1110,7 @@ function FlowChart(props) {
                 <div className="modal-response-msg success">Request Send !</div>
               )}
               {!isReportingRequestSend ? (
-                <div className="modal-body" >
+                <div className="modal-bodynew" >
                   <form onSubmit={handleSubmit}>
                   <div className="modal-title">Request Approval</div>
                   <div className="modal-input">

@@ -4,13 +4,15 @@ import Dashboard from "../pages/Dashboard/Dashboard.jsx";
 import LoginPage from "../components/LoginPage/LoginPage.jsx";
 import EditUserPage from '../common-components/EditUserProfile/EditUserPage.jsx';
 import ProductSelectPage from "../components/ProductSelectPage/productSelectPage.jsx";
+import NewDrug from "../common-components/NewDrug/NewDrug.jsx";
 
 function Router() {
   return (
     <Routes>
       <Route path="/login" element={<LoginPage />} />
       <Route path= "/selectProduct" element={<ProductSelectPage/>} />
-      <Route path="/" element={<Dashboard />} />
+      <Route path="/" element={<Dashboard />}/>
+      <Route path="/newDrug" element={<NewDrug />}/>
       <Route path="/edit-user" element={<EditUserPage />} />
       <Route path="/:product*" element={<VariableRoute />} />
     </Routes>
