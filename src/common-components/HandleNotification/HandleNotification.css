@@ -1,0 +1,14 @@
+.approval-table {
+    width: 100%;
+    border-collapse: collapse; /* Collapse borders to avoid spacing between cells */
+    margin-top: 16px; /* Add margin for spacing between title and table */
+  }
+  
+  .approval-table th, .approval-table td {
+    border: 1px solid #dddddd; /* Add a 1px solid border around cells */
+    padding: 8px; /* Add padding for better appearance */
+  }
+  
+  .approval-table th {
+    background-color: #f2f2f2; /* Add a background color for header cells */
+  }

@@ -54,6 +54,7 @@ function LoginPage() {
           sessionStorage.isUserLoggedIn = "true";
   
           // Navigate to the dashboard
+          // navigate('/selectProduct');
           navigate('/selectProduct');
         } else {
           setError('Invalid username or password');

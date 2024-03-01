@@ -30,6 +30,7 @@ import deloitteLogo from "../../assets/deloitte.svg";
 // export default Header;
 
 import * as React from "react";
+import { useState } from "react";
 import AppBar from "@mui/material/AppBar";
 import Box from "@mui/material/Box";
 import Toolbar from "@mui/material/Toolbar";
@@ -43,15 +44,27 @@ import Button from "@mui/material/Button";
 import Tooltip from "@mui/material/Tooltip";
 import MenuItem from "@mui/material/MenuItem";
 import AdbIcon from "@mui/icons-material/Adb";
+import TextField from '@mui/material/TextField';
 import { useNavigate } from 'react-router-dom';
+import Autocomplete from '@mui/material/Autocomplete';
+import HandleNotification from "../HandleNotification/HandleNotification";
+
 
 const pages = []; //Pass Value to add menu options
-const settings = ["Edit User","Logout"]; //Pass value to add options if clicked on profile icon
+const settings = ["Notification","Edit User","Logout"]; //Pass value to add options if clicked on profile icon
 
 function Header() {
   const [anchorElNav, setAnchorElNav] = React.useState(null);
   const [anchorElUser, setAnchorElUser] = React.useState(null);
-  const navigate = useNavigate()
+  const [searchTerm, setSearchTerm] = useState('');
+  const [showDropdown, setShowDropdown] = useState(false);
+  const [drug,setDrug] = useState('');
+  const drugList = ['Pembrolizumab', 'Paracetamol', 'Oxide'];
+  const [isPendingModalOpen, setPendingModalOpen] = useState(false);
+  const [isApprovalModalOpen, setApprovalModalOpen] = useState(false);
+  const navigate = useNavigate();
+  const [notificationClicked, setNotificationClicked] = useState(false);
+  const userDesignation = sessionStorage.designation;
 
   const handleOpenNavMenu = (event) => {
     setAnchorElNav(event.currentTarget);
@@ -68,6 +81,14 @@ function Header() {
     setAnchorElUser(null);
   };
 
+  const handleSearchChange = (event, newValue) => {
+    setSearchTerm(newValue);
+  };
+
+  const handleSelectDrug = (event, value) => {
+    setSearchTerm(value);
+  };
+
   const handleLogout = () =>{
     sessionStorage.clear(); // Clear any user data stored in session storage
     navigate('/login');
@@ -81,7 +102,24 @@ function Header() {
     // Use the navigate function to go to the "Edit User" page
     navigate('/edit-user');
   };
+
+  const handleNotification = () => {
+    if (userDesignation === 'Analyst') {
+      setPendingModalOpen(true);
+      setNotificationClicked(true);
+      console.log('Notification clicked as an Analyst'+ notificationClicked);
+    }
+    else{
+      setApprovalModalOpen(true);
+      setNotificationClicked(true);
+    }   
   
+  }
+
+  const handleDrugSelect = (drug) =>{
+    setDrug(drug);
+    setShowDropdown(false);
+  }
 
   return (
     <div className="pharma-header">
@@ -186,12 +224,47 @@ function Header() {
               ))}
             </Box>
 
+            {/* <Autocomplete
+              value={searchTerm}
+              onChange={handleSelectDrug}
+              inputValue={searchTerm}
+              onInputChange={handleSearchChange}
+              options={drugList}
+              renderInput={(params) => (
+                <TextField
+                  {...params}
+                  label="Select Drug"
+                  placeholder="Select Drug"
+                  sx={{ mr: 2, width: '250px', bgcolor: 'white', borderRadius: '10px' }}
+                />
+              )}
+            /> */}
+          
+             
+            {/* {showDropdown &&(
+              <Box sx={{ position: 'absolute', zIndex: 9999, mt: 3 }}>
+              <Menu
+                id="drug-dropdown"
+                anchorEl={document.getElementById('drug-search')}
+                open={showDropdown}
+                onClose={() => setShowDropdown(false)}
+              >
+                {drugList.map((drug, index) => (
+                  <MenuItem key={index} onClick={() => handleDrugSelect(drug)}>
+                    {drug}
+                  </MenuItem>
+                ))}
+              </Menu>
+            </Box>
+            )} */}
+
             <Box sx={{ flexGrow: 0 }}>
               {/* <Tooltip title="Open settings">
                 <IconButton onClick={handleOpenUserMenu} sx={{ p: 0 }}>
                   <Avatar alt="Remy Sharp" src="/static/images/avatar/2.jpg" />
                 </IconButton>
               </Tooltip> */}
+
               <IconButton onClick={handleOpenUserMenu} sx={{p: 0}}>
               <Avatar alt="Remy Sharp" src="/static/images/avatar/1.jpg" />{/*User ICON*/}
               </IconButton>
@@ -212,13 +285,25 @@ function Header() {
                 onClose={handleCloseUserMenu}
               >
                 {settings.map((setting) => (
-                  <MenuItem key={setting} onClick={setting === 'Edit User' ? handleEditUser : handleLogout}>
+                  <MenuItem key={setting} onClick={setting === 'Edit User' ? handleEditUser : setting === 'Notification' ? handleNotification : handleLogout}>
                     <Typography textAlign="center">{setting}</Typography>
                 </MenuItem>
                 
                 ))}
               </Menu>
             </Box>
+
+              {isPendingModalOpen && userDesignation === 'Analyst' && (
+                <HandleNotification
+                  isPendingModalOpen={isPendingModalOpen}
+                />
+              )}
+              {isApprovalModalOpen && userDesignation !== 'Analyst' && (
+                <HandleNotification
+                  isApprovalModalOpen={isApprovalModalOpen}
+                />
+              )}
+
           </Toolbar>
         </Container>
       </AppBar>

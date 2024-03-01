@@ -954,7 +954,7 @@ function FlowChart(props) {
           </div>
           <div>
           {/* {(userDesignation !== 'Manager' || isNavigated) && ( */}
-          {(!((window.location.href.includes("/PharmaDigitalProd")) && (userDesignation === 'Manager')))&& (
+          {/* {(!((window.location.href.includes("/PharmaDigitalProd")) && (userDesignation === 'Manager')))&& ( */}
           <div
             className="process-stage-item"
             onDragOver={(e) => e.preventDefault()}
@@ -980,7 +980,7 @@ function FlowChart(props) {
               </ReactFlow>
             </div>
           </div>
-          )}
+          {/* )} */}
           <ProcessOperation
             selectedProcessStageID={selectedProcessStageID}
             className="process-stage-item"
@@ -1173,7 +1173,7 @@ function FlowChart(props) {
           }
         />
       )}
-     {isPendigModalOpen && (
+     {/* {isPendigModalOpen && (
   <GenericModal
     open={isPendigModalOpen}
     handleClose={() => handleGenericCloseModal("PendingRequest-modal")}
@@ -1185,7 +1185,7 @@ function FlowChart(props) {
               <tr>
                 <th>To</th>
                 <th>Request</th>
-<th>Drug</th>
+                <th>Drug</th>
                 <th>Status</th>
                 <th>Comments</th>
               </tr>
@@ -1195,7 +1195,7 @@ function FlowChart(props) {
                 <tr key={request._id}>
                   <td className="sender">{request.to}</td>
                   <td className="request-data">{request.data}</td>
-<td className="drug">
+                  <td className="drug">
                             <a href={"#"} onClick={(e) => handleRequestDataClick(e)}>
                                 {request.drug}
                                </a>
@@ -1231,7 +1231,7 @@ function FlowChart(props) {
       </div>
     }
   ></GenericModal>
-)}
+)} */}
 
 
       {isTemplateModalOpen && (

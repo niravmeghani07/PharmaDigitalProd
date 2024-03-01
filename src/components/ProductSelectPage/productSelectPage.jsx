@@ -9,7 +9,6 @@ import { useNavigate } from 'react-router-dom';
 import { Button } from '@mui/material';
 import Paper from '@mui/material/Paper';
 import "./productSelectPage.css";
-import userEvent from '@testing-library/user-event';
 import { useEffect } from 'react';
 
 export default function SelectAutoWidth() {
@@ -20,12 +19,12 @@ export default function SelectAutoWidth() {
     setDrug(event.target.value);
   };
 
-  useEffect(() => {
-    // Perform navigation when component mounts
-    if (sessionStorage.designation !== "Analyst") {
-      navigate('/dashboard');
-    }
-  }, []);
+  // useEffect(() => {
+  //   // Perform navigation when component mounts
+  //   if (sessionStorage.designation !== "Analyst") {
+  //     navigate('/dashboard');
+  //   }
+  // }, []);
 
   const handleClick = () => {
     navigate('/dashboard');
@@ -38,22 +37,22 @@ export default function SelectAutoWidth() {
 
   return (
     <>
-    {sessionStorage.designation === "Analyst" ? (
+    {/* {sessionStorage.designation === "Analyst" ? ( */}
     <div style={{ display: 'flex', height: '100vh' }}>
     <div className="sidebar">
     <Header />
     <Sidebar /> 
   </div>
-  <div
-    style={{
-      flex: 1,
-      display: 'flex',
-      flexDirection: 'column',
-      alignItems: 'center',
-      justifyContent: 'center',
-      padding: '0 20px', // Add padding to provide spacing
-    }}
-  >
+      <div
+        style={{
+          flex: 1,
+          display: 'flex',
+          flexDirection: 'column',
+          alignItems: 'center',
+          justifyContent: 'center',
+          padding: '0 20px', // Add padding to provide spacing
+        }}
+      >
     <Paper elevation={3} sx={{ p: 2, maxWidth: 1000, textAlign: 'center' }}>
       <p sx={{ mt: 2, mb: 2 }}>Select your Drug</p>
       <div style={{ width: '100%', display: 'flex', justifyContent: 'center' }}>
@@ -99,7 +98,7 @@ export default function SelectAutoWidth() {
     </Paper>
   </div>
 </div>
-) : null }
+{/* ) : null } */}
 
 </>
 );
