@@ -268,7 +268,7 @@ function Header() {
               </Tooltip> */}
 
               <IconButton onClick={handleOpenUserMenu} sx={{p: 0}}>
-              <Avatar alt="Remy Sharp" src="/static/images/avatar/1.jpg" />{/*User ICON*/}
+              <Avatar alt="Remy Sharp" />{/*User ICON*/}
               </IconButton>
               <Menu
                 sx={{ mt: "45px" }}
