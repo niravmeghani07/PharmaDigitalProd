@@ -84,7 +84,7 @@ function Header() {
 
   const handleSearchChange = (event, newValue) => {
     setSearchTerm(newValue);
-    setIsNavigated(true);
+   // setIsNavigated(true);
     navigate('/dashboard');
   };
 

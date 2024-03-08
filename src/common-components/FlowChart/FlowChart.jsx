@@ -1173,7 +1173,7 @@ function FlowChart(props) {
           }
         />
       )}
-     {/* {isPendigModalOpen && (
+     {isPendigModalOpen && (
   <GenericModal
     open={isPendigModalOpen}
     handleClose={() => handleGenericCloseModal("PendingRequest-modal")}
@@ -1231,7 +1231,7 @@ function FlowChart(props) {
       </div>
     }
   ></GenericModal>
-)} */}
+)}
 
 
       {isTemplateModalOpen && (

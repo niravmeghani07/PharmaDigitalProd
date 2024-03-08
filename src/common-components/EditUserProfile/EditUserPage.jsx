@@ -134,7 +134,7 @@ export default function SignUp() {
                   row
                 >
                 {/* Add FormControlLabel for each radio button option */}
-                <FormControlLabel value="Analyst" control={<Radio />} label="Anaylst" />
+                <FormControlLabel value="Analyst" control={<Radio />} label="Analyst" />
                 <FormControlLabel value="Manager" control={<Radio />} label="Manager" />
               </RadioGroup>
 
