@@ -64,6 +64,7 @@ function Header() {
   const [isApprovalModalOpen, setApprovalModalOpen] = useState(false);
   const navigate = useNavigate();
   const [notificationClicked, setNotificationClicked] = useState(false);
+  //const [isnavigated,setIsNavigated] = useState(false);
   const userDesignation = sessionStorage.designation;
 
   const handleOpenNavMenu = (event) => {
@@ -83,6 +84,8 @@ function Header() {
 
   const handleSearchChange = (event, newValue) => {
     setSearchTerm(newValue);
+    setIsNavigated(true);
+    navigate('/dashboard');
   };
 
   const handleSelectDrug = (event, value) => {
@@ -224,7 +227,7 @@ function Header() {
               ))}
             </Box>
 
-            {/* <Autocomplete
+          <Autocomplete
               value={searchTerm}
               onChange={handleSelectDrug}
               inputValue={searchTerm}
@@ -238,8 +241,7 @@ function Header() {
                   sx={{ mr: 2, width: '250px', bgcolor: 'white', borderRadius: '10px' }}
                 />
               )}
-            /> */}
-          
+            />
              
             {/* {showDropdown &&(
               <Box sx={{ position: 'absolute', zIndex: 9999, mt: 3 }}>

@@ -43,7 +43,7 @@ export default function SelectAutoWidth() {
     <Header />
     <Sidebar /> 
   </div>
-      <div
+      {/*<div
         style={{
           flex: 1,
           display: 'flex',
@@ -56,7 +56,7 @@ export default function SelectAutoWidth() {
     <Paper elevation={3} sx={{ p: 2, maxWidth: 1000, textAlign: 'center' }}>
       <p sx={{ mt: 2, mb: 2 }}>Select your Drug</p>
       <div style={{ width: '100%', display: 'flex', justifyContent: 'center' }}>
-        {/* Centering the drug selection components */}
+         Centering the drug selection components 
         <FormControl fullWidth>
           <InputLabel id="demo-simple-select-autowidth-label">Drug</InputLabel>
           <Select
@@ -68,7 +68,7 @@ export default function SelectAutoWidth() {
             label="drug"
           >
             <MenuItem value="">
-              {/* <em>None</em> */}
+               <em>None</em> 
             </MenuItem>
             <MenuItem value={'Pembrolizumab'}>Pembrolizumab</MenuItem>
             <MenuItem value={'Oxide'}>Oxide</MenuItem>
@@ -96,7 +96,7 @@ export default function SelectAutoWidth() {
         New Drug
       </Button>
     </Paper>
-  </div>
+      </div>*/}
 </div>
 {/* ) : null } */}
 
