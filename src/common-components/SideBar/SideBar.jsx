@@ -11,7 +11,6 @@ import FormControlLabel from "@mui/material/FormControlLabel";
 import FormControl from "@mui/material/FormControl";
 import TextField from "@mui/material/TextField";
 import CustomTreeView from "../CustomTreeView/CustomTreeView.jsx";
-//import { sideBarData } from "../../constants/sidebarStageData.js";
 import "./SideBar.css";
 import axios from 'axios';
 
@@ -44,13 +43,10 @@ const Sidebar = (props) => {
     const fetchData = async()=>{
         try {
           const response = await axios.get("http://localhost:5000/api/sidebardata");
-          setsidebarData(response.data);
-          //console.log(response.data);
-          
+          setsidebarData(response.data);        
         } catch (error) {
           console.log("Error fetching the sidebardata: ",error);
         }
-
     }
 
     // const parsedTreeData = JSON.parse(TreeData);

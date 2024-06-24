@@ -12,7 +12,7 @@ function Router() {
       <Route path="/login" element={<LoginPage />} />
       <Route path= "/selectProduct" element={<ProductSelectPage/>} />
       <Route path="/" element={<Dashboard />}/>
-      <Route path="/newDrug" element={<NewDrug />}/>
+      <Route path="/new-drug" element={<NewDrug />}/>
       <Route path="/edit-user" element={<EditUserPage />} />
       <Route path="/:product*" element={<VariableRoute />} />
     </Routes>

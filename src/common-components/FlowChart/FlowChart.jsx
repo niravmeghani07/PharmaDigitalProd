@@ -357,7 +357,6 @@ function FlowChart(props) {
     
     catch (error) {
       console.error('Error approve status:', error.message);
-      // Handle errors or show an error message to the user
     }
     setTimeout(() => {  window.location.reload();     }, 5000);
     //window.location.reload();
@@ -419,36 +418,13 @@ function FlowChart(props) {
       // Handle errors or show an error message to the user
     }
     
-
-    // const serviceID = 'service_xtxbskr';
-    // const templateID = 'template_i7pibko';
-    // const publicKey = 'uQx6ja6xlQPOEZkn6';
-
-    // //create object that has dynamic data for Email
-    // const emailData = {
-    //   from_name:'Nirav Meghani',
-    //   from_email:'nc90762@gmail.com',
-    //   to_email:email,
-    //   to_name: 'RamKumar',
-    //   message: emailBody
-    // }
-    // emailjs.send(serviceID,templateID,emailData,publicKey)
-    // .then((response)=>{
-    //   handletriggerEmailNotification();
-    //   console.log('Email Sent Successfully!', response);
-    //   setEmail('');
-    //   setEmailBody('');
-    // })
-    // .catch((err)=>console.log(err));
-    
-    // console.log(email);
-  }
+}
 
   React.useEffect(() => {
     const fetchOptions = async () => {
       try {
         const response = await axios.get("http://localhost:5000/api/register");
-        const extractedEmails = response.data.map(item => item.firstName);
+        const extractedEmails = response.data.filter(item => item.designation === "Manager").map(item => item.firstName);
         console.log("extractedEmails===>"+extractedEmails);
         setEmail(extractedEmails); // Assuming the response.data is an array of options
         console.log("email===>"+email);
@@ -750,10 +726,6 @@ function FlowChart(props) {
         const managerRequest = requests.filter(request => request.to === username);
         const userRequestCount = userRequest.filter(request => request.status === 'Pending').length;
         const managerRequestCount = managerRequest.filter(request => request.status === 'Pending').length;
-        // console.log(pendingRequestCount);
-        // console.log(requests);
-        // console.log(userRequest);
-
         setmanagerPendingRequestCount(managerRequestCount);
         setmanagerPendingRequest(managerRequest);
         setuserPendingRequests(userRequest);

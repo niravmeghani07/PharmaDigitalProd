@@ -18,6 +18,7 @@ MongoClient.connect(uri)
     const db = client.db('PharmaApp');
     const userRegistryCollection = db.collection('userRegistry');
     const pendingRequestCollection = db.collection('pendingRequests');
+    const flowMapCollection = db.collection('flowmap');
     
     //const collection = db.collection('sidebardata');
 
@@ -60,7 +61,6 @@ MongoClient.connect(uri)
       try {
         
         const taskId = req.body; // Assuming the client sends JSON data with user details
-        console.log(taskId);
         const filter = {
           data: taskId.data
         };
@@ -136,6 +136,19 @@ MongoClient.connect(uri)
       } catch(error){
         console.log('Could not found registerd users: ',error);
         res.status(500).json({ error: 'Internal Server Error' });
+      }
+    })
+
+    //send the flowchart data into db
+    app.post('/api/flowchartData', async(req,res)=>{
+      try {
+        const request = req.body;
+        const result = await flowMapCollection.insertOne(request);
+        res.json({ success: true, message: 'Request Sent successfully', data: result });
+
+      } catch (error) {
+        console.error('Error while inserting flow', error);
+        res.status(500).json({ error: 'Internal server Error' });
       }
     })
 

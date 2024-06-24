@@ -51,7 +51,7 @@ import HandleNotification from "../HandleNotification/HandleNotification";
 
 
 const pages = []; //Pass Value to add menu options
-const settings = ["Notification","Edit User","Logout"]; //Pass value to add options if clicked on profile icon
+const settings = ["Notification","Edit User","New Drug","Logout"]; //Pass value to add options if clicked on profile icon
 
 function Header() {
   const [anchorElNav, setAnchorElNav] = React.useState(null);
@@ -106,6 +106,11 @@ function Header() {
     navigate('/edit-user');
   };
 
+  const handleNewDrug = () => {
+    handleCloseUserMenu();
+    navigate('/new-drug')
+  }
+  
   const handleNotification = () => {
     if (userDesignation === 'Analyst') {
       setPendingModalOpen(true);
@@ -287,7 +292,7 @@ function Header() {
                 onClose={handleCloseUserMenu}
               >
                 {settings.map((setting) => (
-                  <MenuItem key={setting} onClick={setting === 'Edit User' ? handleEditUser : setting === 'Notification' ? handleNotification : handleLogout}>
+                  <MenuItem key={setting} onClick={setting === 'Edit User' ? handleEditUser : setting === 'Notification' ? handleNotification : setting==="New Drug" ? handleNewDrug : handleLogout}>
                     <Typography textAlign="center">{setting}</Typography>
                 </MenuItem>
                 
