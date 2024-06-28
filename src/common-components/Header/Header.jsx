@@ -51,7 +51,7 @@ import HandleNotification from "../HandleNotification/HandleNotification";
 
 
 const pages = []; //Pass Value to add menu options
-const settings = ["Notification","Edit User","New Drug","Logout"]; //Pass value to add options if clicked on profile icon
+const settings = ["Notification","Edit User","New Drug","Existing Drug","Logout"]; //Pass value to add options if clicked on profile icon
 
 function Header() {
   const [anchorElNav, setAnchorElNav] = React.useState(null);
@@ -108,7 +108,12 @@ function Header() {
 
   const handleNewDrug = () => {
     handleCloseUserMenu();
-    navigate('/new-drug')
+    navigate('/new-drug');
+  }
+
+  const handleExistingDrug = () => {
+    handleCloseUserMenu();
+    navigate('/select-drug');
   }
   
   const handleNotification = () => {
@@ -292,7 +297,7 @@ function Header() {
                 onClose={handleCloseUserMenu}
               >
                 {settings.map((setting) => (
-                  <MenuItem key={setting} onClick={setting === 'Edit User' ? handleEditUser : setting === 'Notification' ? handleNotification : setting==="New Drug" ? handleNewDrug : handleLogout}>
+                  <MenuItem key={setting} onClick={setting === 'Edit User' ? handleEditUser : setting === 'Notification' ? handleNotification : setting==="New Drug" ? handleNewDrug : setting==="Existing Drug" ? handleExistingDrug: handleLogout}>
                     <Typography textAlign="center">{setting}</Typography>
                 </MenuItem>
                 

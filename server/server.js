@@ -1,5 +1,6 @@
 const express = require('express');
-const { MongoClient } = require('mongodb');
+const { MongoClient, ObjectId } = require('mongodb');
+require('dotenv').config();
 
 const app = express();
 const PORT = process.env.PORT || 5000;
@@ -8,19 +9,17 @@ const cors = require('cors');
 app.use(cors());
 app.use(express.json());
 
-// MongoDB Atlas connection URI
-const uri = 'mongodb+srv://niravMeghani:FdhopgXdro7aRfIG@cluster0.7cmxwc4.mongodb.net/?retryWrites=true&w=majority'; 
 
 // Connect to MongoDB Atlas
-MongoClient.connect(uri)
+MongoClient.connect(process.env.MONGODB_URI)
   .then((client) => {
     console.log('Connected to MongoDB Atlas');
     const db = client.db('PharmaApp');
     const userRegistryCollection = db.collection('userRegistry');
     const pendingRequestCollection = db.collection('pendingRequests');
     const flowMapCollection = db.collection('flowmap');
-    
-    //const collection = db.collection('sidebardata');
+
+
 
     // SidebarData
     app.get('/api/sidebardata', async (req, res) => {
@@ -151,6 +150,55 @@ MongoClient.connect(uri)
         res.status(500).json({ error: 'Internal server Error' });
       }
     })
+
+// Define Express routes
+app.get('/api/process-maps', async (req, res) => {
+  try {
+    const processMaps = await flowMapCollection.find({},{projection:{_id:1,name:1}}).toArray();
+    console.log("Process Maps",processMaps);
+    res.json(processMaps);
+  } catch (err) {
+    res.status(500).json({ message: err.message });
+  }
+});
+
+app.get('/api/process-map/:id', async (req, res) => {
+  try {
+    console.log("req.params.id:",req.params.id);
+    const flow = await flowMapCollection.findOne({_id:new ObjectId(req.params.id)});
+    console.log("flow:",flow);
+    if (flow) {
+      res.json(flow);
+    } else {
+      res.status(404).send('Flow not found');
+    }
+  } catch (error) {
+    console.error('Error fetching flow data:', error);
+    res.status(500).send('Error fetching flow data');
+  }
+});
+
+
+app.put('/api/process-map/:id', async (req, res) => {
+  try {
+    const flowId = req.params.id;
+    const { nodes, edges } = req.body;
+    const result = await flowMapCollection.updateOne(
+      { _id: new ObjectId(flowId) },
+      { $set: { nodes, edges } }
+    );
+
+    if (result.matchedCount > 0) {
+      res.json({ message: 'Flow updated successfully' });
+    } else {
+      res.status(404).send('Flow not found');
+    }
+  } catch (error) {
+    console.error('Error updating flow:', error);
+    res.status(500).send('Internal Server Error');
+  }
+});
+
 
     // Start the server
     app.listen(PORT, () => {
