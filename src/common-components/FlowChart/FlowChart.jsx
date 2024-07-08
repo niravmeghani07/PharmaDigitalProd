@@ -1,10 +1,11 @@
 import "./FlowChart.css";
-import { HashRouter, HashLink } from 'react-router-dom';
+import { HashRouter, HashLink ,useNavigate} from 'react-router-dom';
 import React, { useRef } from "react";
 import { useState, useCallback } from "react";
 import ProcessOperation from "../../components/ProcessOperation/ProcessOperation.jsx";
 import { useAppContext } from "../../context/appContext";
 import UndoIcon from "@mui/icons-material/Undo";
+import EditIcon from "@mui/icons-material/Edit";
 import SaveScreenShot from "@mui/icons-material/AddAPhoto";
 import RestoreInitialGraph from "@mui/icons-material/RestartAlt";
 import SaveIcon from "@mui/icons-material/Save";
@@ -29,7 +30,7 @@ import ReactFlow, {
   Panel,
 } from "reactflow";
 import "reactflow/dist/style.css";
-// import axios from "axios";
+import axiosServer from "axios";
 
 import { saveAs } from "file-saver";
 import LinearTreeView from "../LinearTreeView/LinearTreeView.jsx";
@@ -46,27 +47,7 @@ import InputLabel from '@mui/material/InputLabel';
 import MenuItem from '@mui/material/MenuItem';
 import FormControl from '@mui/material/FormControl';
 import Select from '@mui/material/Select';
-
-const initialNodes = [
-  // { id: "1", position: { x: 100, y: 100 }, data: { label: "Mixing" } },
-  // { id: "2", position: { x: 300, y: 100 }, data: { label: "Milling" } },
-  // { id: "3", position: { x: 500, y: 100 }, data: { label: "Formulation" } },
-  // { id: "4", position: { x: 700, y: 100 }, data: { label: "Labeling" } },
-  // { id: "5", position: { x: 900, y: 100 }, data: { label: "Compression" } },
-  // { id: "6", position: { x: 1100, y: 100 }, data: { label: "Distribution" } },
-];
-
-const initialEdges = [
-  // { id: "n1", source: "1", target: "2" }, //Mixing to Milling
-  // { id: "n2", source: "2", target: "3" }, //Milling to Formulation
-  // { id: "n3", source: "3", target: "1" }, //Formulation to Mixing
-  // { id: "n4", source: "1", target: "4" }, //Mixing to Labeling
-  // { id: "n5", source: "4", target: "1" }, //Labeling to Mixing
-  // { id: "n6", source: "1", target: "3" }, //Mixing to Formulation
-  // { id: "n7", source: "3", target: "4" }, //Formulation to Labeling
-  // { id: "n8", source: "4", target: "5" }, //Labeling to Compression
-  // { id: "n9", source: "5", target: "6" }, //Compression to Distribution
-];
+import { useLocation } from "react-router-dom";
 
 const array = [
   {
@@ -118,7 +99,9 @@ const array = [
 ];
 
 function FlowChart(props) {
-  const { title, productItemStructureData, restoredNode, restoredEdge } = props;
+  const navigate = useNavigate();
+  const location=useLocation();
+  const { title, productItemStructureData, restoredNode, restoredEdge,drugId } = props;
   const {
     mainTreeData,
     updateMainTreeData,
@@ -130,8 +113,8 @@ function FlowChart(props) {
   const [treeProcessData, setTreeProcessData] = useState(mainTreeData);
   const [selectedProcessStageID, setSelectedProcessStageID] =
     React.useState("");
-  const [nodes, setNodes, onNodesChange] = useNodesState(initialNodes);
-  const [edges, setEdges, onEdgesChange] = useEdgesState(initialEdges);
+  const [nodes, setNodes, onNodesChange] = useNodesState([]);
+  const [edges, setEdges, onEdgesChange] = useEdgesState([]);
   const [ID, setID] = useState(5);
   const [nodeHistory, setNodeHistory] = useState([]); // Array to store previous node states
   const reactFlowWrapper = useRef(null);
@@ -148,9 +131,11 @@ function FlowChart(props) {
   const[comments,setComments] = useState("");
   const[isNavigated,setisNavigated] = useState(false);
   const[drug,setDrug] = useState("");
+  const[selectedDrugName, setSelectedDrugName]=useState("");
   
 
   console.log(userDesignation);
+  console.log("DrugId:",drugId);
 
   const [coOrds, setCoords] = useState({
     xPos: 580,
@@ -245,13 +230,12 @@ function FlowChart(props) {
     });
     setUndoClicked(undoClicked + 1);
   };
-  const handleUndo = () => {
-    nodes.pop();
-    const updatedMainTreeData = [...mainTreeData];
-    updatedMainTreeData.pop();
-    setNodes([...nodes]);
-    setUndoClicked(undoClicked - 1);
-    updateMainTreeData([...updatedMainTreeData]);
+  const handleEdit = () => {
+    
+    const processId=location.pathname.split('/')[3];
+    console.log("Path name:",processId);
+    navigate(`/editDrug/${drugId}`);
+   
   };
 
   const handleDownload = () => {
@@ -394,12 +378,40 @@ function FlowChart(props) {
   const handleSubmit= async(e)=>{
     e.preventDefault();
     setReportingIsRequestSend(true);
+    //fetchDrugName();
+    console.log("drugId:",drugId);
+    try{
+    const responseDrug= await fetch(`http://localhost:5000/api/process-map/${drugId}`);
+    if(responseDrug.ok)
+      {
+        const fetchedFlowData = await responseDrug.json();
+    //const selectedFlow =processMaps.find(map =>map._id ===drugId);
+    console.log(fetchedFlowData);
+    setSelectedDrugName(fetchedFlowData.name)
+      }
+      else{
+        console.log("Error");
+      }
+   //const responseDrug= axiosServer.get(`http://localhost:5000/api/process-map/${drugId}`);
+    }
+    catch(error)
+    {
+      console.log("try error:",error);
+    }
+
+  }
+
+  React.useEffect(() => {
+
+    if(selectedDrugName)
+    {
+      const createRequestData = async() =>{
     const requestData = {
       from: sessionStorage.userName,
       to: recipient,
       data: requestBody,
       status: "Pending",
-      drug: drug,
+      drug: drugId +':' +selectedDrugName,
       comment: "",
       statusModifiedData: new Date()
     }
@@ -417,8 +429,11 @@ function FlowChart(props) {
       console.error('Error in sending Request:', error.message);
       // Handle errors or show an error message to the user
     }
-    
+  };
+  createRequestData();
 }
+    
+},[selectedDrugName]);
 
   React.useEffect(() => {
     const fetchOptions = async () => {
@@ -439,6 +454,30 @@ function FlowChart(props) {
   const handleInputChange = (event, newInputValue) => {
     setRecipient(newInputValue);
   };
+
+
+  const fetchDrugName = async () => {
+    console.log("drugId:",drugId);
+    try{
+    const responseDrug= await fetch(`http://localhost:5000/api/process-map/${drugId}`);
+    if(responseDrug.ok)
+      {
+        const fetchedFlowData = await responseDrug.json();
+    //const selectedFlow =processMaps.find(map =>map._id ===drugId);
+    console.log(fetchedFlowData);
+    setSelectedDrugName(fetchedFlowData.name)
+      }
+      else{
+        console.log("Error");
+      }
+   //const responseDrug= axiosServer.get(`http://localhost:5000/api/process-map/${drugId}`);
+    }
+    catch(error)
+    {
+      console.log("try error:",error);
+    }
+
+  }
 
 
   const handleSaveTemplate = () => {
@@ -763,16 +802,26 @@ function FlowChart(props) {
     setIsOpen(!isOpen);
   };
 
-  const handleRequestDataClick = (e) =>{
-    e.preventDefault();
+  const handleRequestDataClick = (requestdrugDetails) =>{
+    
     setisNavigated(true);
     // Navigate to a new page
-    window.open(`/${drug}`, '_blank');
+    //window.open(`/${drug}`, '_blank');
+    const requestdrugId=requestdrugDetails.split(':')[0];
+    window.open(`#/dashboard/${requestdrugId}`, '_blank');
+
   }
 
-  const handleChange = (event) => {
-    setDrug(event.target.value);
+  const handleChange = () => {
+    //setDrug(event.target.value);
+    setDrug(drugId);
   };
+
+  const extractNameFromDrugRequest=(selectedDrugInformation) =>{
+
+    const selectedDrugNamedetail=selectedDrugInformation.split(':')[1];
+    return selectedDrugNamedetail;
+  }
   const handleSelect = (name) => {
     setSelectedTechSite(name);
     toggleDropdown();
@@ -812,17 +861,15 @@ function FlowChart(props) {
                   <img src={Transfer} width={"32px"} height={"29px"} />
                 </div>
               </Tooltip>
-              <Tooltip title={"Undo"} arrow>
+              <Tooltip title={"Edit"} arrow>
                 <div style={{ marginRight: "0.625rem" }}>
-                  <UndoIcon
+                  <EditIcon
                     fontSize="large"
                     style={{
-                      color: undoClicked === 0 ? "grey" : "#4e9f3d",
-                      pointerEvents: undoClicked === 0 ? "none" : "",
                       marginRight: "0.5rem",
                       cursor: "pointer",
                     }}
-                    onClick={handleUndo}
+                    onClick={handleEdit}
                   />
                 </div>
               </Tooltip>
@@ -890,7 +937,8 @@ function FlowChart(props) {
               )
               }
 
-              {userDesignation === 'Analyst' &&(
+              {/*
+              userDesignation === 'Analyst' &&(
               <Tooltip title={"Save"} arrow>
                 <div 
                 onClick={()=>handleGenericOpenModal("saveData-modal")}
@@ -904,7 +952,7 @@ function FlowChart(props) {
                     style={{ cursor: "pointer" }}
                   />
                 </div>
-              </Tooltip>)}
+              </Tooltip>)*/}
 
               <Tooltip title={"Save as Template"} arrow>
                 <div
@@ -1008,8 +1056,13 @@ function FlowChart(props) {
                               {request.data}
                             </td>
                             <td className="drug">
-                            <a href={"#"} onClick={(e) => handleRequestDataClick(e)}>
-                                {request.drug}
+                            <a href={`#/dashboard/${extractNameFromDrugRequest(request.drug)}`} onClick={(e) => 
+                              { e.preventDefault();
+                              handleRequestDataClick(request.drug)
+                              }
+                            }>
+                                {extractNameFromDrugRequest(request.drug)}
+                                
                                </a>
                             </td>
                             <td className="action-buttons">
@@ -1102,19 +1155,19 @@ function FlowChart(props) {
                       onChange={(event, newValue) => setRecipient(newValue)}
                     />
                     
-                    <FormControl sx={{ width: "120% !important", marginBottom: "10px" }}>
+                    {/*<FormControl sx={{ width: "120% !important", marginBottom: "10px" }}>
                       <InputLabel id="demo-simple-select-autowidth-label">Drug</InputLabel>
                       <Select
                       labelId="demo-simple-select-autowidth-label"
                       id="demo-simple-select-autowidth"
-                      value={drug}
+                      value={drugId}
                       onChange={handleChange}
                       autoWidth
                       label="drug"
                       >
-                      <MenuItem value={'Pembrolizumab'}>Pembrolizumab</MenuItem>
+                      <MenuItem value={`${drugId}`}>Pembrolizumab</MenuItem>
                       </Select>
-                      </FormControl>
+                      </FormControl>*/}
                       </div>
                         
                     <TextField
@@ -1168,8 +1221,13 @@ function FlowChart(props) {
                   <td className="sender">{request.to}</td>
                   <td className="request-data">{request.data}</td>
                   <td className="drug">
-                            <a href={"#"} onClick={(e) => handleRequestDataClick(e)}>
-                                {request.drug}
+                            <a href={`#/dashboard/${extractNameFromDrugRequest(request.drug)}`} onClick={(e) => 
+                              { e.preventDefault();
+                              handleRequestDataClick(request.drug)
+                              }
+                            }>
+                                {extractNameFromDrugRequest(request.drug)}
+                                
                                </a>
                             </td>
                   <td className="status">

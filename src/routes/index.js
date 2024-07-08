@@ -1,11 +1,12 @@
 import React from "react";
 import { Route, Routes, Navigate, useParams, useLocation } from "react-router-dom";
 import Dashboard from "../pages/Dashboard/Dashboard.jsx";
+import EditDrug from '../common-components/SelectDrug/SelectDrug.jsx';
 import LoginPage from "../components/LoginPage/LoginPage.jsx";
 import EditUserPage from '../common-components/EditUserProfile/EditUserPage.jsx';
 import ProductSelectPage from "../components/ProductSelectPage/productSelectPage.jsx";
 import NewDrug from "../common-components/NewDrug/NewDrug.jsx";
-import SelectDrug from "../common-components/SelectDrug/SelectDrug.jsx";
+
 
 function Router() {
   return (
@@ -13,10 +14,11 @@ function Router() {
       <Route path="/login" element={<LoginPage />} />
       <Route path= "/selectProduct" element={<ProductSelectPage/>} />
       <Route path="/" element={<Dashboard />}/>
+      <Route path="/dashboard/:processId" element={<Dashboard />}/>
       <Route path="/new-drug" element={<NewDrug />}/>
-      <Route path="/select-drug" element={<SelectDrug />}/>
       <Route path="/edit-user" element={<EditUserPage />} />
       <Route path="/:product*" element={<VariableRoute />} />
+      <Route path="/editDrug/:processId" element={<EditDrug />}/>
     </Routes>
   );
 }

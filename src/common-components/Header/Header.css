@@ -1,5 +1,5 @@
-/* .pharma-header{
-    position: fixed;
+ .pharma-header{
+    position: relative;
     z-index: 100;
     height: 7vh;
     background-color: black;
@@ -12,7 +12,7 @@
     width: 100vw;
     color: #fff;
 }
-
+/*
 .image-container
 {
     margin-right: 10px;
@@ -30,11 +30,21 @@
     align-items: center;
 } */
 
+
 .MuiAppBar-root{
     background-color: #101828 !important;
 }
+
 .MuiAvatar-root{
     background-color: white !important;
     color: #101828 !important;
     font-weight: bold !important;
 }
+
+.FindDrugDropdown{
+    position:relative;
+    left:170px;
+}
+
+
+

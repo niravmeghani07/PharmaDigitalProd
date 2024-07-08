@@ -1,4 +1,5 @@
 import "./Header.css";
+import FindDrug from "./FindDrug.jsx";
 // import userImage from "../../assets/user.png";
 // import menu from "../../assets/menu.png";
 import deloitteLogo from "../../assets/deloitte.svg";
@@ -51,7 +52,7 @@ import HandleNotification from "../HandleNotification/HandleNotification";
 
 
 const pages = []; //Pass Value to add menu options
-const settings = ["Notification","Edit User","New Drug","Existing Drug","Logout"]; //Pass value to add options if clicked on profile icon
+const settings = ["Notification","Edit User","New Drug","Logout"]; //Pass value to add options if clicked on profile icon
 
 function Header() {
   const [anchorElNav, setAnchorElNav] = React.useState(null);
@@ -224,7 +225,6 @@ function Header() {
             >
               Process Development Platform
             </Typography>
-
             <Box sx={{ flexGrow: 1, display: { xs: "none", md: "flex" } }}>
               {pages.map((page) => (
                 <Button
@@ -236,8 +236,8 @@ function Header() {
                 </Button>
               ))}
             </Box>
-
-          <Autocomplete
+           {<FindDrug/>  }
+            {/*<Autocomplete
               value={searchTerm}
               onChange={handleSelectDrug}
               inputValue={searchTerm}
@@ -251,8 +251,7 @@ function Header() {
                   sx={{ mr: 2, width: '250px', bgcolor: 'white', borderRadius: '10px' }}
                 />
               )}
-            />
-             
+            />*/ }       
             {/* {showDropdown &&(
               <Box sx={{ position: 'absolute', zIndex: 9999, mt: 3 }}>
               <Menu
@@ -297,7 +296,7 @@ function Header() {
                 onClose={handleCloseUserMenu}
               >
                 {settings.map((setting) => (
-                  <MenuItem key={setting} onClick={setting === 'Edit User' ? handleEditUser : setting === 'Notification' ? handleNotification : setting==="New Drug" ? handleNewDrug : setting==="Existing Drug" ? handleExistingDrug: handleLogout}>
+                  <MenuItem key={setting} onClick={setting === 'Edit User' ? handleEditUser : setting === 'Notification' ? handleNotification : setting==="New Drug" ? handleNewDrug : handleLogout}>
                     <Typography textAlign="center">{setting}</Typography>
                 </MenuItem>
                 

@@ -9,8 +9,13 @@ import { getProductItemStructure } from "../../services/modules/dashboard/dashbo
 import LoginPage from "../../components/LoginPage/LoginPage.jsx";
 import { useAppContext } from "../../context/appContext.js";
 import Loader from "../../common-components/Loader/Loader.jsx";
+import { useLocation, useParams } from "react-router-dom";
+
+import axios from 'axios';
 
 const Dashboard = () => {
+  const {processId} =useParams();
+  
   const [productData, setProductData] = useState(null);
   const [productItemData, setProductItemData] = useState(null);
   const { currentProduct } = useAppContext();
@@ -18,56 +23,43 @@ const Dashboard = () => {
   const [restoredNode, setrestoredNode] = React.useState([]);
   const [restoredEdge, setrestoredEdge] = React.useState([]);
 
+
+
+
   React.useEffect(() => {
-    sessionStorage.productName =
-      <process className="env NODE_ENV"></process> === "production"
-        ? sessionStorage.productName
-        : "Nicotine 4mg";
-    const fetchProductData = async () => {
-      try {
-        const productName = sessionStorage.productName;
-        const productQuery = `ItemNumber=${productName}`;
-        const data = await getProductDetails(productQuery);
-        setProductData(data);
-      } catch (error) {
-        console.error("Error fetching product data:", error);
-      }
-    };
-
-    const fetchProductItemStructure = async () => {
+console.log("process Id",processId);
+    if (processId) {
       setIsLoading(true);
-      try {
-        // const productName = sessionStorage.productName;
-        const productName =
-          currentProduct === null ? sessionStorage.productName : currentProduct;
-        const productQuery = `ItemNumber=${productName}`;
-        let payload = {
-          q: productQuery,
-          expand: "Component",
-        };
-        const data = await getProductItemStructure(payload);
-        if (data) {
-          setProductItemData(data?.items);
+      // Fetch the selected flow data from the server using the ID
+      axios.get(`http://localhost:5000/api/process-map/${processId}`)
+        .then(response => {
+          const fetchedFlowData = response.data;
+          setrestoredNode(response.data.nodes);
+          setrestoredEdge(response.data.edges);
           setIsLoading(false);
-        }
-      } catch (error) {
-        console.error("Error fetching product data:", error);
-      }
-    };
+          
+          
+        })
+        .catch(error => {
+          console.error('Error fetching flow data:', error);
+        });
+    }
+  }, [processId]);
 
-    // fetchProductData();
-    fetchProductItemStructure();
-  }, [currentProduct]);
+
   const handleRestore = (restoredNodes, restoredEdges) => {
+    
     setrestoredNode(restoredNodes);
     setrestoredEdge(restoredEdges);
+    
   };
-  useEffect(() => {}, [restoredNode, restoredEdge]);
+  
 
   return (
     <>
       {sessionStorage.isUserLoggedIn === "true" ? (
         <div className="dashboard">
+         
           {/* {isLoading && (
             <div className="overlay">
               <div className="loader">

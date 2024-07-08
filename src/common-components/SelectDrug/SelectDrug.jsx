@@ -1,5 +1,3 @@
-// src/components/FlowDiagram.js
-
 import React, { useState, useEffect, useRef, useCallback} from 'react';
 import ReactFlow, { Controls, Background,BackgroundVariant , ReactFlowProvider,
   addEdge,
@@ -14,9 +12,8 @@ import Sidebar from './Sidebar';
 import TextField from "@mui/material/TextField";
 import { Button } from '@mui/material';
 import './index.css';
+import { useLocation, useParams } from "react-router-dom";
 
-let id = 3;
-//const getId = () => `dndnode_${id++}`;
 
 const FlowDiagram = () => {
   const reactFlowWrapper = useRef(null);
@@ -26,9 +23,9 @@ const FlowDiagram = () => {
   const [initialFlowData, setInitialFlowData] = useState({ nodes: [], edges: [] });
   const [nodes, setNodes, onNodesChange] = useNodesState(initialFlowData.nodes);
   const [edges, setEdges, onEdgesChange] = useEdgesState(initialFlowData.edges);
-  const [ispopUpOpen, setIspopUpOpen] = useState(false);
   const [selectedFlowId, setSelectedFlowId] = useState('');
   const [isEditMode, setIsEditMode] = useState(false);
+  const [ispopUpOpen] = useState(false);
 
   
 
@@ -37,8 +34,15 @@ const FlowDiagram = () => {
   const {project, setViewport} = useReactFlow();
 
   const navigate = useNavigate();
+  const {processId} =useParams();
+  console.log("Process Id in SelectDrug:",processId);
 
   useEffect(() => {
+    if(processId)
+      {
+    setSelectedFlowId(processId);
+    setIsEditMode(true);
+      }
     fetchProcessMaps();
   }, []);
 
@@ -140,7 +144,7 @@ const FlowDiagram = () => {
 
       .then(response => {
         console.log('Flow data saved successfully:', response.data);
-        setIsEditMode(false);
+
       })
       .catch(error => {
         console.error('Error saving flow data:', error);
@@ -151,14 +155,14 @@ const FlowDiagram = () => {
 
   const handleSubmit = () => {
     handleSave();
-    setIspopUpOpen(false);
+
    
   }
 
 
   const handleEdit = () => {
     setIsEditMode(!isEditMode);
-    setIspopUpOpen(false);
+  
    
   }
 
@@ -166,22 +170,18 @@ const FlowDiagram = () => {
   return (
     
     <div>
-      <select onChange={handleSelectChange} value={selectedMapName} style={{width:'300px',height:'40px', fontsize:'16px'}}>
-        <option value="">Select a process map</option>
-        {processMaps.map(map => (
-          <option key={map._id} value={map._id}>{map.name}</option> // Ensure map._id or another unique identifier is used as key
-
-        ))}
-      </select>
-      {selectedMapName && (
+      
+      {selectedFlowId && (
         <div className="process-map-name">
           <h2>{selectedMapName}</h2>
       
       {nodes.length>0 && (
-        
-          <div className={`dndflow ${ispopUpOpen? 'blurred' : ''}`}>
+
+        <div className={`dndflow ${ispopUpOpen? 'blurred' : ''}`}>
+         
           <ReactFlowProvider>
           <div className="reactflow-wrapper" ref={reactFlowWrapper}>
+          <h2>{selectedMapName}</h2>
             <ReactFlow 
               nodes={nodes}
               edges={edges}
@@ -197,14 +197,12 @@ const FlowDiagram = () => {
           
             <Sidebar />
             <div class="button-container">
-            {!isEditMode ? ( <button className='edit-button' onClick={handleEdit}>Edit</button>):
-            (
-              <button className='save-button' onClick={handleSubmit}>
+            
+            <button className='save-button' onClick={handleSubmit}>
               Save
             </button>
 
-            )
-            }
+            
           <button className='exit-button' onClick={handleExit}>
             Exit
           </button>
@@ -212,10 +210,13 @@ const FlowDiagram = () => {
           </div>
           </ReactFlowProvider>
           </div> 
+        
       )}
       </div>
+       
 )}
     </div>
+   
   );
 };
 
